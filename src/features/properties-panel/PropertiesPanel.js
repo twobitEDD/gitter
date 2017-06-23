@@ -246,7 +246,7 @@ class PropertiesPanel {
 
             element.tempo = value;
 
-            this._eventBus.fire('propertiesPanel.tempoInput', {
+            this._eventBus.fire('gitter.propertiesPanel.tempoInput', {
               tempo: value
             });
           },

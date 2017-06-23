@@ -4,6 +4,7 @@ require('p5/lib/addons/p5.sound.js');
 import CommandInterceptor from 'diagram-js/lib/command/CommandInterceptor';
 
 import AddSequenceHandler from './cmd/AddSequenceHandler';
+import RemoveSequenceHandler from './cmd/RemoveSequenceHandler';
 
 import { isRoot, isEmitter, isListener } from '../util/GitterUtil';
 
@@ -18,6 +19,7 @@ class Audio extends CommandInterceptor {
     this._sounds = sounds;
 
     commandStack.registerHandler('gitter.audio.addSequence', AddSequenceHandler);
+    commandStack.registerHandler('gitter.audio.removeSequence', RemoveSequenceHandler);
 
     this.phrases = {};
 
@@ -25,7 +27,9 @@ class Audio extends CommandInterceptor {
     this.mainPart.loop();
     this.mainPart.start();
 
-    eventBus.on('propertiesPanel.tempoInput', ({ tempo }) => {
+    window.phrases = this.mainPart.phrases;
+
+    eventBus.on('gitter.propertiesPanel.tempoInput', ({ tempo }) => {
       this.mainPart.setBPM(tempo);
     });
 
@@ -60,14 +64,15 @@ class Audio extends CommandInterceptor {
   }
 
   removeSequence(emitter, listener) {
-
+    this._commandStack.execute('gitter.audio.removeSequence', {
+      emitter,
+      listener,
+      phrases: this.phrases,
+      mainPart: this.mainPart
+    });
   }
 
   updateSequence(sequence, emitter, listener) {
-
-  }
-
-  hasSequence(emitter, listener) {
 
   }
 }

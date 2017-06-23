@@ -22,7 +22,14 @@ class Sequences extends CommandInterceptor {
     });
 
     // connection update
+
     // connection delete
+    this.postExecute('connection.delete', event => {
+      const { source, target } = event.context;
+
+      audio.removeSequence(source, target);
+    });
+
     // properties update
   }
 }

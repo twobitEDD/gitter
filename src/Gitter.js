@@ -12,6 +12,7 @@ import gitterContextPad from './features/context-pad';
 import gitterPalette from './features/palette';
 import helpOverlay from './features/help-overlay';
 import keyboardBindings from './features/keyboard-bindings';
+import modeling from './features/modeling';
 import notifications from './features/notifications';
 import ordering from './features/ordering';
 import propertiesPanel from './features/properties-panel';
@@ -56,6 +57,7 @@ class Gitter extends Diagram {
       gitterRules,
       helpOverlay,
       keyboardBindings,
+      modeling,
       notifications,
       ordering,
       propertiesPanel,
