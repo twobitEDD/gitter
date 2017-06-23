@@ -25,7 +25,7 @@ class AutoConnect extends CommandInterceptor {
   constructor(eventBus, elementRegistry, modeling, gitterRules) {
     super(eventBus);
 
-    this.postExecute('shape.create', context => {
+    this.postExecuted('shape.create', context => {
       const shape = context.context.shape;
 
       if (isEmitter(shape)) {
@@ -54,49 +54,51 @@ class AutoConnect extends CommandInterceptor {
       }
     }, this);
 
+    this.postExecuted('elements.move', event => {
+      const shapes = event.context.shapes;
 
-    this.postExecute('shape.move', context => {
-      const shape = context.context.shape;
+      shapes.forEach(shape => {
+        if (isEmitter(shape)) {
+          shape.outgoing.forEach(outgoing => {
+            if (!gitterRules.canConnect(shape, outgoing.target)) {
+              modeling.removeConnection(outgoing);
+            }
+          });
 
-      if (isEmitter(shape)) {
-        shape.outgoing.forEach(outgoing => {
-          if (!gitterRules.canConnect(shape, outgoing.target)) {
-            modeling.removeConnection(outgoing);
-          }
-        });
+          const listeners = elementRegistry.filter(elements => {
+            return isListener(elements);
+          });
 
-        const listeners = elementRegistry.filter(elements => {
-          return isListener(elements);
-        });
+          listeners.forEach(listener => {
 
-        listeners.forEach(listener => {
+            if (gitterRules.canConnect(shape, listener) &&
+                !connected(shape, listener)) {
+              modeling.connect(shape, listener, { type: 'gitter:Connection' });
+            }
 
-          if (gitterRules.canConnect(shape, listener) &&
-              !connected(shape, listener)) {
-            modeling.connect(shape, listener, { type: 'gitter:Connection' });
-          }
+          });
+        }
 
-        });
-      }
+        if (isListener(shape)) {
+          shape.incoming.forEach(incoming => {
+            if (!gitterRules.canConnect(shape, incoming.source)) {
+              console.log('removing connection');
+              modeling.removeConnection(incoming);
+            }
+          });
 
-      if (isListener(shape)) {
-        shape.incoming.forEach(incoming => {
-          if (!gitterRules.canConnect(shape, incoming.source)) {
-            modeling.removeConnection(incoming);
-          }
-        });
+          const emitters = elementRegistry.filter(elements => {
+            return isEmitter(elements);
+          });
 
-        const emitters = elementRegistry.filter(elements => {
-          return isEmitter(elements);
-        });
-
-        emitters.forEach(emitter => {
-          if (gitterRules.canConnect(emitter, shape) &&
-              !connected(emitter, shape)) {
-            modeling.connect(emitter, shape, { type: 'gitter:Connection' });
-          }
-        });
-      }
+          emitters.forEach(emitter => {
+            if (gitterRules.canConnect(emitter, shape) &&
+                !connected(emitter, shape)) {
+              modeling.connect(emitter, shape, { type: 'gitter:Connection' });
+            }
+          });
+        }
+      });
     });
   }
 }

@@ -16,7 +16,7 @@ class Sequences extends CommandInterceptor {
 
       const distance = getDistance(source, target);
 
-      const sequence = getSequence(distance, maxDistance, offsetDistance);
+      const sequence = getSequence(distance, maxDistance, offsetDistance, source.timeSignature);
 
       audio.addSequence(sequence, source, target);
     });
@@ -30,7 +30,7 @@ class Sequences extends CommandInterceptor {
 
       const distance = getDistance(source, target);
 
-      const sequence = getSequence(distance, maxDistance, offsetDistance);
+      const sequence = getSequence(distance, maxDistance, offsetDistance, source.timeSignature);
 
       audio.updateSequence(sequence, source, target);
     });
