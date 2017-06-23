@@ -29,6 +29,18 @@ class Audio extends CommandInterceptor {
 
     window.phrases = this.mainPart.phrases;
 
+    const reverb = new p5.Reverb();
+    const delay = new p5.Delay();
+
+    eventBus.on('gitter.sounds.loaded', () => {
+      const allSounds = sounds.getAllSounds();
+
+      Object.values(allSounds).forEach(({ sound }) => {
+        reverb.process(sound, 1, 2); // reverb time, decay rate
+        delay.process(sound, .12, .1, 2300); // delay time, feedback, filter frequency
+      });
+    });
+
     // enable changing tempo during input
     eventBus.on('gitter.propertiesPanel.tempoInput', ({ tempo }) => {
       this.mainPart.setBPM(tempo);

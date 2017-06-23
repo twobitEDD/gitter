@@ -15,6 +15,8 @@ class Sounds {
   loadSounds() {
     this._loadingOverlay.addLoadingComponent(this);
 
+    this._eventBus.fire('gitter.sounds.loading');
+
     let numberLoading = 0;
 
     this._config.sounds.forEach(s => {
@@ -25,6 +27,8 @@ class Sounds {
 
         if (numberLoading === 0) {
           this._loadingOverlay.removeLoadingComponent(this);
+
+          this._eventBus.fire('gitter.sounds.loaded');
         }
       });
 
