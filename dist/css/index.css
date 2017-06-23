@@ -99,6 +99,17 @@ body {
   color: #fff;
 }
 
+.dev-note {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, 0);
+  padding: 10px;
+  background-color: #D1345B;
+  color: #fff;
+  pointer-events: none;
+}
+
 /**
  * helper
  */

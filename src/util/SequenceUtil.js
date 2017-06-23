@@ -28,9 +28,6 @@ export function getSequence(distance, maxDistance, offsetDistance, timeSignature
 
   sequence[index] = 1;
 
-  console.log('timeSignature: ' + timeSignature);
-  console.log('sequence: ' + sequence);
-
   return sequence;
 }
 

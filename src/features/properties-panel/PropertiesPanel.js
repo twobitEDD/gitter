@@ -150,7 +150,7 @@ class PropertiesPanel {
 
       domClasses(this.$propertiesPanel).remove('inverted');
 
-      this.$title.textContent = 'Emitter';
+      this.$title.textContent = 'EMITTER';
 
       const options = [];
 
@@ -188,7 +188,7 @@ class PropertiesPanel {
 
       domClasses(this.$propertiesPanel).remove('inverted');
 
-      this.$title.textContent = 'Listener';
+      this.$title.textContent = 'LISTENER';
 
       const options = [];
 
@@ -226,7 +226,7 @@ class PropertiesPanel {
 
       domClasses(this.$propertiesPanel).add('inverted');
 
-      this.$title.textContent = 'Root';
+      this.$title.textContent = 'ROOT';
 
       let oldTempo = null;
 
