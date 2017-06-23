@@ -108,6 +108,7 @@ body {
   background-color: #D1345B;
   color: #fff;
   pointer-events: none;
+  z-index: 100000;
 }
 
 /**
