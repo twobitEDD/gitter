@@ -19,6 +19,10 @@ export default {
   sounds: [
     { id: 'kick-606', label: 'Kick 606', path: './audio/kick-606.mp3' },
     { id: 'snare-606', label: 'Snare 606', path: './audio/snare-606.mp3' },
-    { id: 'closedhat-606', label: 'Closed Hihat 606', path: './audio/closedhat-606.mp3' }
+    { id: 'openhat-606', label: 'Open Hihat 606', path: './audio/openhat-606.mp3' },
+    { id: 'closedhat-606', label: 'Closed Hihat 606', path: './audio/closedhat-606.mp3' },
+    { id: 'hitom-606', label: 'Hitom 606', path: './audio/hitom-606.mp3' },
+    { id: 'lowtom-606', label: 'Lowtom 606', path: './audio/lowtom-606.mp3' },
+    { id: 'cymbal-606', label: 'Cymbal 606', path: './audio/cymbal-606.mp3' },
   ]
 };

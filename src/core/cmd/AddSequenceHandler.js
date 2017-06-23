@@ -39,7 +39,6 @@ class AddSequenceHandler {
   }
 
   revert({
-    sequence,
     emitter,
     listener,
     phrases,

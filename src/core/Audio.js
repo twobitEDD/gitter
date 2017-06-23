@@ -5,6 +5,7 @@ import CommandInterceptor from 'diagram-js/lib/command/CommandInterceptor';
 
 import AddSequenceHandler from './cmd/AddSequenceHandler';
 import RemoveSequenceHandler from './cmd/RemoveSequenceHandler';
+import UpdateSequenceHandler from './cmd/UpdateSequenceHandler';
 
 import { isRoot, isEmitter, isListener } from '../util/GitterUtil';
 
@@ -20,6 +21,7 @@ class Audio extends CommandInterceptor {
 
     commandStack.registerHandler('gitter.audio.addSequence', AddSequenceHandler);
     commandStack.registerHandler('gitter.audio.removeSequence', RemoveSequenceHandler);
+    commandStack.registerHandler('gitter.audio.updateSequence', UpdateSequenceHandler);
 
     this.phrases = {};
 
@@ -70,7 +72,13 @@ class Audio extends CommandInterceptor {
   }
 
   updateSequence(sequence, emitter, listener) {
-
+    this._commandStack.execute('gitter.audio.updateSequence', {
+      sequence,
+      emitter,
+      listener,
+      phrases: this.phrases,
+      mainPart: this.mainPart
+    });
   }
 
   getMainPart() {

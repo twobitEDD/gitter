@@ -22,6 +22,18 @@ class Sequences extends CommandInterceptor {
     });
 
     // connection update
+    this.postExecute('connection.layout', event => {
+      const context = event.context,
+            connection = context.connection,
+            source = connection.source,
+            target = connection.target;
+
+      const distance = getDistance(source, target);
+
+      const sequence = getSequence(distance, maxDistance, offsetDistance);
+
+      audio.updateSequence(sequence, source, target);
+    });
 
     // connection delete
     this.postExecute('connection.delete', event => {

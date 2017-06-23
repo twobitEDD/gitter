@@ -12,7 +12,10 @@ const IGNORED_COMMANDS = [
   'connection.move',
   'gitter.changeRootProperties',
   'gitter.changeEmitterProperties',
-  'gitter.changeListenerProperties'
+  'gitter.changeListenerProperties',
+  'gitter.audio.addSequence',
+  'gitter.audio.removeSequence',
+  'gitter.audio.updateSequence'
 ];
 
 class Notifications {

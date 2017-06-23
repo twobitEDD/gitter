@@ -63,7 +63,6 @@ class EntryFactory {
               domClasses($selectStyled).has('active') &&
               !domClasses(target).has('select-option')) {
 
-            console.log('fooo');
             domClasses($selectStyled).remove('active');
 
             $selectOptions.style.display = 'none';
