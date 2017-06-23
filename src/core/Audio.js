@@ -29,24 +29,9 @@ class Audio extends CommandInterceptor {
 
     window.phrases = this.mainPart.phrases;
 
+    // enable changing tempo during input
     eventBus.on('gitter.propertiesPanel.tempoInput', ({ tempo }) => {
       this.mainPart.setBPM(tempo);
-    });
-
-    this.postExecute('gitter.changeProperties', ({ context }) => {
-      const { element, properties } = context;
-
-      if (isRoot(element)) {
-        this.mainPart.setBPM(properties.tempo);
-      }
-    });
-
-    this.reverted('gitter.changeProperties', ({ context }) => {
-      const { element, oldProperties } = context;
-
-      if (isRoot(element)) {
-        this.mainPart.setBPM(oldProperties.tempo);
-      }
     });
   }
 
@@ -74,6 +59,10 @@ class Audio extends CommandInterceptor {
 
   updateSequence(sequence, emitter, listener) {
 
+  }
+
+  getMainPart() {
+    return this.mainPart;
   }
 }
 

@@ -9,7 +9,10 @@ const IGNORED_COMMANDS = [
   'shape.delete',
   'connection.create',
   'connection.layout',
-  'connection.move'
+  'connection.move',
+  'gitter.changeRootProperties',
+  'gitter.changeEmitterProperties',
+  'gitter.changeListenerProperties'
 ];
 
 class Notifications {
