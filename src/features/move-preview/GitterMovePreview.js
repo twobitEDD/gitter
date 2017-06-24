@@ -3,6 +3,8 @@ import svgAttr from 'tiny-svg/lib/attr';
 import svgCreate from 'tiny-svg/lib/create';
 import svgClear from 'tiny-svg/lib/clear';
 
+var translate = require('diagram-js/lib/util/SvgTransformUtil').translate;
+
 import { isEmitter, isListener } from '../../util/GitterUtil';
 
 function createEmitterPreview(cx, cy, timeSignature, maxDistance, offsetDistance) {
@@ -37,33 +39,45 @@ class GitterMovePreview {
   constructor(eventBus, canvas, elementRegistry, config) {
     const { maxDistance, offsetDistance } = config;
 
-    const previewLayer = canvas.getLayer('gitterMovePreview');
+    const movePreviewLayer = canvas.getLayer('gitterMovePreview');
 
-    eventBus.on('shape.move.init',({ shape }) => {
+    eventBus.on('shape.move.start',({ context }) => {
+      const { shapes } = context;
 
-      // listener
-      if (isListener(shape)) {
-        const emitters = elementRegistry.filter(e => isEmitter(e));
+      const hasMovingListeners = shapes.filter(s => isListener(s)).length;
 
-        console.log('emitters', emitters);
+      const emitters = elementRegistry.filter(e => isEmitter(e));
 
-        emitters.forEach(emitter => {
-          const { x, y, width, timeSignature } = emitter;
+      const movingGroup = context.movingGroup = svgCreate('g');
+      const nonMovingGroup = svgCreate('g');
 
-          const cx = Math.round(x + (width / 2));
-          const cy = Math.round(y + (width / 2));
+      svgAppend(movePreviewLayer, movingGroup);
+      svgAppend(movePreviewLayer, nonMovingGroup);
 
-          const preview = createEmitterPreview(cx, cy, timeSignature, maxDistance, offsetDistance);
+      emitters.forEach(emitter => {
+        const { x, y, width, timeSignature } = emitter;
 
-          svgAppend(previewLayer, preview);
+        const cx = Math.round(x + (width / 2));
+        const cy = Math.round(y + (width / 2));
 
-          console.log(previewLayer.childNodes);
-        });
-      }
+        const preview = createEmitterPreview(cx, cy, timeSignature, maxDistance, offsetDistance);
+
+        if (shapes.includes(emitter)) {
+          svgAppend(movingGroup, preview);
+        } else if (hasMovingListeners) {
+          svgAppend(nonMovingGroup, preview);
+        }
+      });
+    });
+
+    eventBus.on('shape.move.move', ({ dx, dy, context }) => {
+      const { movingGroup } = context;
+
+      translate(movingGroup, dx, dy);
     });
 
     eventBus.on('shape.move.end', () => {
-      svgClear(previewLayer);
+      svgClear(movePreviewLayer);
     });
   }
 }
