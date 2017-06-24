@@ -1,7 +1,7 @@
 import CommandInterceptor from 'diagram-js/lib/command/CommandInterceptor';
 
 import ChangeRootPropertiesHandler from './cmd/ChangeRootPropertiesHandler';
-import ChangeListenerProperties from './cmd/ChangeListenerProperties';
+import ChangeListenerPropertiesHandler from './cmd/ChangeListenerPropertiesHandler';
 
 import { isRoot, isEmitter, isListener } from '../../util/GitterUtil';
 import { getSequence } from '../../util/SequenceUtil';
@@ -32,7 +32,7 @@ class GitterUpdater extends CommandInterceptor {
     const { maxDistance, offsetDistance } = config;
 
     commandStack.registerHandler('gitter.changeRootProperties', ChangeRootPropertiesHandler);
-    commandStack.registerHandler('gitter.changeListenerProperties', ChangeListenerProperties);
+    commandStack.registerHandler('gitter.changeListenerProperties', ChangeListenerPropertiesHandler);
 
     const mainPart = audio.getMainPart();
 
@@ -63,12 +63,19 @@ class GitterUpdater extends CommandInterceptor {
           });
         }
       } else if (isListener(element)) {
+        const onPlay = () => {
+          eventBus.fire('gitter.audio.playSound', {
+            listener: element
+          });
+        };
+
         commandStack.execute('gitter.changeListenerProperties', {
           mainPart,
           listener: element,
           oldProperties,
           properties,
-          sounds
+          sounds,
+          onPlay
         });
       }
     });

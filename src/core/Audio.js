@@ -52,13 +52,20 @@ class Audio extends CommandInterceptor {
   addSequence(sequence, emitter, listener) {
     const { sound } = this._sounds.getSound(listener.sound);
 
+    const onPlay = () => {
+      this._eventBus.fire('gitter.audio.playSound', {
+        listener
+      });
+    };
+
     this._commandStack.execute('gitter.audio.addSequence', {
       sequence,
       emitter,
       listener,
       phrases: this.phrases,
       mainPart: this.mainPart,
-      sound
+      sound,
+      onPlay
     });
   }
 

@@ -11,7 +11,8 @@ class AddSequenceHandler {
       listener,
       phrases,
       mainPart,
-      sound
+      sound,
+      onPlay
     } = context;
 
     if (!phrases[listener.id]) {
@@ -27,6 +28,7 @@ class AddSequenceHandler {
     const phrase = new p5.Phrase(listener.id, (time, playbackRate) => {
       sound.rate(playbackRate);
       sound.play(time);
+      onPlay();
     }, sequenceFromSequences);
 
     if (!mainPart.getPhrase(listener.id)) {

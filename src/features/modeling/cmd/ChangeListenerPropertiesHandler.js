@@ -1,9 +1,9 @@
 const p5 = require('p5');
 require('p5/lib/addons/p5.sound.js');
 
-class ChangeListenerProperties {
+class ChangeListenerPropertiesHandler {
   execute(context) {
-    const { mainPart, listener, properties, oldProperties, sounds } = context;
+    const { mainPart, listener, properties, oldProperties, sounds, onPlay } = context;
 
     if (properties.sound) {
       const oldPhrase = context.oldPhrase = mainPart.getPhrase(listener.id);
@@ -13,6 +13,7 @@ class ChangeListenerProperties {
       const phrase = new p5.Phrase(listener.id, (time, playbackRate) => {
         sound.rate(playbackRate);
         sound.play(time);
+        onPlay();
       }, oldPhrase.sequence);
 
       mainPart.removePhrase(listener.id);
@@ -28,4 +29,4 @@ class ChangeListenerProperties {
   }
 }
 
-export default ChangeListenerProperties;
+export default ChangeListenerPropertiesHandler;
