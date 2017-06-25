@@ -1,4 +1,4 @@
-const STEP_FIELDS = 16;
+const MEASURES = 16;
 
 function zeros(length) {
   let array = [];
@@ -11,16 +11,16 @@ function zeros(length) {
 }
 
 export function getSequence(distance, maxDistance, offsetDistance, timeSignature) {
-  let index = Math.floor(STEP_FIELDS / (maxDistance - offsetDistance) * distance);
+  let index = Math.floor(MEASURES / (maxDistance - offsetDistance) * distance);
 
-  const sequence = zeros(STEP_FIELDS);
+  const sequence = zeros(MEASURES);
   index = Math.min(index, 15);
 
   // time signature 1/2 -> length = 8
   // time signature 1/4 -> length = 4
   // time signature 1/8 -> length = 2
   // time signature 1/16 -> length = 1
-  const length = STEP_FIELDS / timeSignature;
+  const length = MEASURES / timeSignature;
 
   // index 10, time signature 1/2 -> index = Math.floor(10 / 8) * 8 -> 8
   // index 10, time signature 1/8 -> index = Math.floor(10 / 2) * 2 -> 10
@@ -32,7 +32,7 @@ export function getSequence(distance, maxDistance, offsetDistance, timeSignature
 }
 
 export function getSequenceFromSequences(sequences) {
-  const sequence = zeros(STEP_FIELDS);
+  const sequence = zeros(MEASURES);
 
   Object.values(sequences).forEach(value => {
 

@@ -25,9 +25,15 @@ class Audio extends CommandInterceptor {
 
     this.phrases = {};
 
-    this.mainPart = new p5.Part(16);
+    this.mainPart = new p5.Part();
     this.mainPart.loop();
     this.mainPart.start();
+
+    const phrase = new p5.Phrase('loopStart', (time, playbackRate) => {
+      eventBus.fire('gitter.audio.loopStart');
+    }, [ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ]);
+
+    this.mainPart.addPhrase(phrase);
 
     window.phrases = this.mainPart.phrases;
 

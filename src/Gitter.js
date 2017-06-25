@@ -8,6 +8,7 @@ import autoConnect from './features/auto-connect';
 import config from './config';
 import coreModule from './core';
 import cropping from './features/cropping';
+import emitterAnimation from './features/emitter-animation';
 import gitterContextPad from './features/context-pad';
 import gitterMovePreview from './features/move-preview';
 import gitterPalette from './features/palette';
@@ -54,6 +55,7 @@ class Gitter extends Diagram {
       autoConnect,
       coreModule,
       cropping,
+      emitterAnimation,
       gitterContextPad,
       gitterMovePreview,
       gitterPalette,

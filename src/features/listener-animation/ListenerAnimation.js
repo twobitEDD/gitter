@@ -7,15 +7,21 @@ class ListenerAnimation {
   constructor(eventBus, canvas, config) {
     const listenerAnimationLayer = canvas.getLayer('gitterListenerAnimation');
 
+    this.circles = [];
+
+    this.updateAnimation();
+
     eventBus.on('gitter.audio.playSound', ({ listener }) => {
       const { x, y, width } = listener;
 
       const circle = svgCreate('circle');
 
+      let radius = 30;
+
       svgAttr(circle, {
         cx: Math.round(x + (width / 2)),
         cy: Math.round(y + (width / 2)),
-        r: 30
+        r: radius
       });
 
       svgAttr(circle, {
@@ -25,9 +31,29 @@ class ListenerAnimation {
 
       svgAppend(listenerAnimationLayer, circle);
 
-      setTimeout(() => {
-        svgRemove(circle);
-      }, 30);
+      this.circles.push({
+        gfx: circle,
+        radius,
+        created: Date.now()
+      });
+    });
+  }
+
+  updateAnimation() {
+    requestAnimationFrame(this.updateAnimation.bind(this));
+
+    this.circles.forEach(circle => {
+      circle.radius -= 1;
+
+      svgAttr(circle.gfx, {
+        r: circle.radius
+      });
+
+      if (Date.now() - circle.created > 500) {
+        svgRemove(circle.gfx);
+
+        this.circles = this.circles.filter(c => c !== circle);
+      }
     });
   }
 }
