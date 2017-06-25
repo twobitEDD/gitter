@@ -43,7 +43,7 @@ class ListenerAnimation {
     requestAnimationFrame(this.updateAnimation.bind(this));
 
     this.circles.forEach(circle => {
-      circle.radius -= 1;
+      circle.radius = Math.max(0, circle.radius - 1);
 
       svgAttr(circle.gfx, {
         r: circle.radius

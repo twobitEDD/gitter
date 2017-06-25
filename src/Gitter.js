@@ -10,7 +10,7 @@ import coreModule from './core';
 import cropping from './features/cropping';
 import emitterAnimation from './features/emitter-animation';
 import gitterContextPad from './features/context-pad';
-import gitterMovePreview from './features/move-preview';
+import gitterEmitterPreview from './features/emitter-preview';
 import gitterPalette from './features/palette';
 import helpOverlay from './features/help-overlay';
 import keyboardBindings from './features/keyboard-bindings';
@@ -57,7 +57,7 @@ class Gitter extends Diagram {
       cropping,
       emitterAnimation,
       gitterContextPad,
-      gitterMovePreview,
+      gitterEmitterPreview,
       gitterPalette,
       gitterRules,
       helpOverlay,

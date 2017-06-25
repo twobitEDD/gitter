@@ -48718,7 +48718,6 @@ EventBus.prototype.off = function (event, callback) {
  */
 EventBus.prototype.fire = function (type, data) {
 
-  // if (type === 'commandStack.connection.layout.executed
   // console.log(type, data);
 
   var event, listeners, returnValue, args;
@@ -69266,27 +69265,27 @@ var _contextPad = __webpack_require__(377);
 
 var _contextPad2 = _interopRequireDefault(_contextPad);
 
-var _movePreview = __webpack_require__(393);
+var _emitterPreview = __webpack_require__(383);
 
-var _movePreview2 = _interopRequireDefault(_movePreview);
+var _emitterPreview2 = _interopRequireDefault(_emitterPreview);
 
 var _palette = __webpack_require__(401);
 
 var _palette2 = _interopRequireDefault(_palette);
 
-var _helpOverlay = __webpack_require__(383);
+var _helpOverlay = __webpack_require__(385);
 
 var _helpOverlay2 = _interopRequireDefault(_helpOverlay);
 
-var _keyboardBindings = __webpack_require__(385);
+var _keyboardBindings = __webpack_require__(387);
 
 var _keyboardBindings2 = _interopRequireDefault(_keyboardBindings);
 
-var _listenerAnimation = __webpack_require__(387);
+var _listenerAnimation = __webpack_require__(389);
 
 var _listenerAnimation2 = _interopRequireDefault(_listenerAnimation);
 
-var _modeling = __webpack_require__(391);
+var _modeling = __webpack_require__(393);
 
 var _modeling2 = _interopRequireDefault(_modeling);
 
@@ -69335,7 +69334,7 @@ var Gitter = function (_Diagram) {
       connectionDocking: ['type', __webpack_require__(353)]
     }, __webpack_require__(23), __webpack_require__(145), __webpack_require__(148), __webpack_require__(355), __webpack_require__(287), __webpack_require__(29), __webpack_require__(331), __webpack_require__(335), __webpack_require__(97), __webpack_require__(62), __webpack_require__(310), __webpack_require__(305), __webpack_require__(340), __webpack_require__(299), __webpack_require__(295), __webpack_require__(293), __webpack_require__(342), __webpack_require__(303), __webpack_require__(308), _overridden2.default];
 
-    var gitterModules = [_autoConnect2.default, _core2.default, _cropping2.default, _emitterAnimation2.default, _contextPad2.default, _movePreview2.default, _palette2.default, _rules2.default, _helpOverlay2.default, _keyboardBindings2.default, _listenerAnimation2.default, _modeling2.default, _notifications2.default, _ordering2.default, _propertiesPanel2.default, _sequences2.default];
+    var gitterModules = [_autoConnect2.default, _core2.default, _cropping2.default, _emitterAnimation2.default, _contextPad2.default, _emitterPreview2.default, _palette2.default, _rules2.default, _helpOverlay2.default, _keyboardBindings2.default, _listenerAnimation2.default, _modeling2.default, _notifications2.default, _ordering2.default, _propertiesPanel2.default, _sequences2.default];
 
     return _possibleConstructorReturn(this, (Gitter.__proto__ || Object.getPrototypeOf(Gitter)).call(this, {
       modules: [].concat(diagramModules, gitterModules)
@@ -70610,6 +70609,169 @@ module.exports = {
 "use strict";
 
 
+var _append = __webpack_require__(53);
+
+var _append2 = _interopRequireDefault(_append);
+
+var _attr = __webpack_require__(35);
+
+var _attr2 = _interopRequireDefault(_attr);
+
+var _create = __webpack_require__(54);
+
+var _create2 = _interopRequireDefault(_create);
+
+var _clear = __webpack_require__(106);
+
+var _clear2 = _interopRequireDefault(_clear);
+
+var _GitterUtil = __webpack_require__(7);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var translate = __webpack_require__(45).translate;
+
+function createEmitterPreview(cx, cy, timeSignature, maxDistance, offsetDistance) {
+  var attrs = {
+    stroke: '#333',
+    strokeWidth: 1,
+    fill: 'none'
+  };
+
+  var preview = (0, _create2.default)('g');
+
+  var circleRadiusStep = (maxDistance - offsetDistance) / timeSignature;
+
+  for (var i = 0; i < timeSignature; i++) {
+    var circle = (0, _create2.default)('circle');
+
+    (0, _attr2.default)(circle, {
+      cx: cx,
+      cy: cy,
+      r: i * circleRadiusStep + circleRadiusStep
+    });
+
+    (0, _attr2.default)(circle, attrs);
+
+    (0, _append2.default)(preview, circle);
+  }
+
+  return preview;
+}
+
+var EmitterPreview = function EmitterPreview(eventBus, canvas, elementRegistry, config) {
+  _classCallCheck(this, EmitterPreview);
+
+  var maxDistance = config.maxDistance,
+      offsetDistance = config.offsetDistance;
+
+
+  var emitterPreviewLayer = canvas.getLayer('gitterEmitterPreview');
+
+  eventBus.on('shape.move.start', function (_ref) {
+    var context = _ref.context;
+    var shapes = context.shapes;
+
+
+    var hasMovingListeners = shapes.filter(function (s) {
+      return (0, _GitterUtil.isListener)(s);
+    }).length;
+
+    var emitters = elementRegistry.filter(function (e) {
+      return (0, _GitterUtil.isEmitter)(e);
+    });
+
+    var movingGroup = context.movingGroup = (0, _create2.default)('g');
+    var nonMovingGroup = (0, _create2.default)('g');
+
+    (0, _append2.default)(emitterPreviewLayer, movingGroup);
+    (0, _append2.default)(emitterPreviewLayer, nonMovingGroup);
+
+    emitters.forEach(function (emitter) {
+      var x = emitter.x,
+          y = emitter.y,
+          width = emitter.width,
+          timeSignature = emitter.timeSignature;
+
+
+      var cx = Math.round(x + width / 2);
+      var cy = Math.round(y + width / 2);
+
+      var preview = createEmitterPreview(cx, cy, timeSignature, maxDistance, offsetDistance);
+
+      if (shapes.includes(emitter)) {
+        (0, _append2.default)(movingGroup, preview);
+      } else if (hasMovingListeners) {
+        (0, _append2.default)(nonMovingGroup, preview);
+      }
+    });
+  });
+
+  eventBus.on('shape.move.move', function (_ref2) {
+    var dx = _ref2.dx,
+        dy = _ref2.dy,
+        context = _ref2.context;
+    var movingGroup = context.movingGroup;
+
+
+    translate(movingGroup, dx, dy);
+  });
+
+  eventBus.on('create.start', function (_ref3) {
+    var shape = _ref3.shape;
+
+    if ((0, _GitterUtil.isListener)(shape)) {
+      var emitters = elementRegistry.filter(function (e) {
+        return (0, _GitterUtil.isEmitter)(e);
+      });
+
+      emitters.forEach(function (emitter) {
+        var x = emitter.x,
+            y = emitter.y,
+            width = emitter.width,
+            timeSignature = emitter.timeSignature;
+
+
+        var cx = Math.round(x + width / 2);
+        var cy = Math.round(y + width / 2);
+
+        var preview = createEmitterPreview(cx, cy, timeSignature, maxDistance, offsetDistance);
+
+        (0, _append2.default)(emitterPreviewLayer, preview);
+      });
+    }
+  });
+
+  eventBus.on(['shape.move.end', 'shape.move.cancel', 'create.end', 'create.cancel'], function () {
+    (0, _clear2.default)(emitterPreviewLayer);
+  });
+};
+
+EmitterPreview.$inject = ['eventBus', 'canvas', 'elementRegistry', 'config'];
+
+module.exports = EmitterPreview;
+
+/***/ }),
+/* 383 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = {
+  __init__: ['gitterEmitterPreview'],
+  gitterEmitterPreview: ['type', __webpack_require__(382)]
+};
+
+/***/ }),
+/* 384 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
 var _domify = __webpack_require__(51);
 
 var _domify2 = _interopRequireDefault(_domify);
@@ -70694,7 +70856,7 @@ HelpOverlay.$inject = ['eventBus'];
 module.exports = HelpOverlay;
 
 /***/ }),
-/* 383 */
+/* 385 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70702,11 +70864,11 @@ module.exports = HelpOverlay;
 
 module.exports = {
   __init__: ['helpOverlay'],
-  helpOverlay: ['type', __webpack_require__(382)]
+  helpOverlay: ['type', __webpack_require__(384)]
 };
 
 /***/ }),
-/* 384 */
+/* 386 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70804,7 +70966,7 @@ KeyboardBindings.$inject = ['eventBus', 'keyboard', 'canvas', 'elementRegistry',
 module.exports = KeyboardBindings;
 
 /***/ }),
-/* 385 */
+/* 387 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70812,11 +70974,11 @@ module.exports = KeyboardBindings;
 
 module.exports = {
   __init__: ['keyboardBindings'],
-  keyboardBindings: ['type', __webpack_require__(384)]
+  keyboardBindings: ['type', __webpack_require__(386)]
 };
 
 /***/ }),
-/* 386 */
+/* 388 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70900,7 +71062,7 @@ var ListenerAnimation = function () {
       requestAnimationFrame(this.updateAnimation.bind(this));
 
       this.circles.forEach(function (circle) {
-        circle.radius -= 1;
+        circle.radius = Math.max(0, circle.radius - 1);
 
         (0, _attr2.default)(circle.gfx, {
           r: circle.radius
@@ -70925,13 +71087,13 @@ ListenerAnimation.$inject = ['eventBus', 'canvas', 'config'];
 exports.default = ListenerAnimation;
 
 /***/ }),
-/* 387 */
+/* 389 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _ListenerAnimation = __webpack_require__(386);
+var _ListenerAnimation = __webpack_require__(388);
 
 var _ListenerAnimation2 = _interopRequireDefault(_ListenerAnimation);
 
@@ -70943,7 +71105,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 388 */
+/* 390 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70953,11 +71115,11 @@ var _CommandInterceptor2 = __webpack_require__(22);
 
 var _CommandInterceptor3 = _interopRequireDefault(_CommandInterceptor2);
 
-var _ChangeRootPropertiesHandler = __webpack_require__(390);
+var _ChangeRootPropertiesHandler = __webpack_require__(392);
 
 var _ChangeRootPropertiesHandler2 = _interopRequireDefault(_ChangeRootPropertiesHandler);
 
-var _ChangeListenerPropertiesHandler = __webpack_require__(389);
+var _ChangeListenerPropertiesHandler = __webpack_require__(391);
 
 var _ChangeListenerPropertiesHandler2 = _interopRequireDefault(_ChangeListenerPropertiesHandler);
 
@@ -71067,7 +71229,7 @@ GitterUpdater.$inject = ['eventBus', 'commandStack', 'audio', 'sounds', 'element
 module.exports = GitterUpdater;
 
 /***/ }),
-/* 389 */
+/* 391 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71137,7 +71299,7 @@ var ChangeListenerPropertiesHandler = function () {
 exports.default = ChangeListenerPropertiesHandler;
 
 /***/ }),
-/* 390 */
+/* 392 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71180,144 +71342,6 @@ var ChangeRootPropertiesHandler = function () {
 exports.default = ChangeRootPropertiesHandler;
 
 /***/ }),
-/* 391 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-module.exports = {
-  __init__: ['gitterUpdater'],
-  gitterUpdater: ['type', __webpack_require__(388)]
-};
-
-/***/ }),
-/* 392 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _append = __webpack_require__(53);
-
-var _append2 = _interopRequireDefault(_append);
-
-var _attr = __webpack_require__(35);
-
-var _attr2 = _interopRequireDefault(_attr);
-
-var _create = __webpack_require__(54);
-
-var _create2 = _interopRequireDefault(_create);
-
-var _clear = __webpack_require__(106);
-
-var _clear2 = _interopRequireDefault(_clear);
-
-var _GitterUtil = __webpack_require__(7);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var translate = __webpack_require__(45).translate;
-
-function createEmitterPreview(cx, cy, timeSignature, maxDistance, offsetDistance) {
-  var attrs = {
-    stroke: '#333',
-    strokeWidth: 1,
-    fill: 'none'
-  };
-
-  var preview = (0, _create2.default)('g');
-
-  var circleRadiusStep = (maxDistance - offsetDistance) / timeSignature;
-
-  for (var i = 0; i < timeSignature; i++) {
-    var circle = (0, _create2.default)('circle');
-
-    (0, _attr2.default)(circle, {
-      cx: cx,
-      cy: cy,
-      r: i * circleRadiusStep + circleRadiusStep
-    });
-
-    (0, _attr2.default)(circle, attrs);
-
-    (0, _append2.default)(preview, circle);
-  }
-
-  return preview;
-}
-
-var GitterMovePreview = function GitterMovePreview(eventBus, canvas, elementRegistry, config) {
-  _classCallCheck(this, GitterMovePreview);
-
-  var maxDistance = config.maxDistance,
-      offsetDistance = config.offsetDistance;
-
-
-  var movePreviewLayer = canvas.getLayer('gitterMovePreview');
-
-  eventBus.on('shape.move.start', function (_ref) {
-    var context = _ref.context;
-    var shapes = context.shapes;
-
-
-    var hasMovingListeners = shapes.filter(function (s) {
-      return (0, _GitterUtil.isListener)(s);
-    }).length;
-
-    var emitters = elementRegistry.filter(function (e) {
-      return (0, _GitterUtil.isEmitter)(e);
-    });
-
-    var movingGroup = context.movingGroup = (0, _create2.default)('g');
-    var nonMovingGroup = (0, _create2.default)('g');
-
-    (0, _append2.default)(movePreviewLayer, movingGroup);
-    (0, _append2.default)(movePreviewLayer, nonMovingGroup);
-
-    emitters.forEach(function (emitter) {
-      var x = emitter.x,
-          y = emitter.y,
-          width = emitter.width,
-          timeSignature = emitter.timeSignature;
-
-
-      var cx = Math.round(x + width / 2);
-      var cy = Math.round(y + width / 2);
-
-      var preview = createEmitterPreview(cx, cy, timeSignature, maxDistance, offsetDistance);
-
-      if (shapes.includes(emitter)) {
-        (0, _append2.default)(movingGroup, preview);
-      } else if (hasMovingListeners) {
-        (0, _append2.default)(nonMovingGroup, preview);
-      }
-    });
-  });
-
-  eventBus.on('shape.move.move', function (_ref2) {
-    var dx = _ref2.dx,
-        dy = _ref2.dy,
-        context = _ref2.context;
-    var movingGroup = context.movingGroup;
-
-
-    translate(movingGroup, dx, dy);
-  });
-
-  eventBus.on('shape.move.end', function () {
-    (0, _clear2.default)(movePreviewLayer);
-  });
-};
-
-GitterMovePreview.$inject = ['eventBus', 'canvas', 'elementRegistry', 'config'];
-
-module.exports = GitterMovePreview;
-
-/***/ }),
 /* 393 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -71325,8 +71349,8 @@ module.exports = GitterMovePreview;
 
 
 module.exports = {
-  __init__: ['gitterMovePreview'],
-  gitterMovePreview: ['type', __webpack_require__(392)]
+  __init__: ['gitterUpdater'],
+  gitterUpdater: ['type', __webpack_require__(390)]
 };
 
 /***/ }),

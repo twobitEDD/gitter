@@ -35,11 +35,11 @@ function createEmitterPreview(cx, cy, timeSignature, maxDistance, offsetDistance
   return preview;
 }
 
-class GitterMovePreview {
+class EmitterPreview {
   constructor(eventBus, canvas, elementRegistry, config) {
     const { maxDistance, offsetDistance } = config;
 
-    const movePreviewLayer = canvas.getLayer('gitterMovePreview');
+    const emitterPreviewLayer = canvas.getLayer('gitterEmitterPreview');
 
     eventBus.on('shape.move.start',({ context }) => {
       const { shapes } = context;
@@ -51,8 +51,8 @@ class GitterMovePreview {
       const movingGroup = context.movingGroup = svgCreate('g');
       const nonMovingGroup = svgCreate('g');
 
-      svgAppend(movePreviewLayer, movingGroup);
-      svgAppend(movePreviewLayer, nonMovingGroup);
+      svgAppend(emitterPreviewLayer, movingGroup);
+      svgAppend(emitterPreviewLayer, nonMovingGroup);
 
       emitters.forEach(emitter => {
         const { x, y, width, timeSignature } = emitter;
@@ -76,12 +76,34 @@ class GitterMovePreview {
       translate(movingGroup, dx, dy);
     });
 
-    eventBus.on('shape.move.end', () => {
-      svgClear(movePreviewLayer);
+    eventBus.on('create.start', ({ shape }) => {
+      if (isListener(shape)) {
+        const emitters = elementRegistry.filter(e => isEmitter(e));
+
+        emitters.forEach(emitter => {
+          const { x, y, width, timeSignature } = emitter;
+
+          const cx = Math.round(x + (width / 2));
+          const cy = Math.round(y + (width / 2));
+
+          const preview = createEmitterPreview(cx, cy, timeSignature, maxDistance, offsetDistance);
+
+          svgAppend(emitterPreviewLayer, preview);
+        });
+      }
+    });
+
+    eventBus.on([
+      'shape.move.end',
+      'shape.move.cancel',
+      'create.end',
+      'create.cancel'
+    ], () => {
+      svgClear(emitterPreviewLayer);
     });
   }
 }
 
-GitterMovePreview.$inject = [ 'eventBus', 'canvas', 'elementRegistry', 'config' ];
+EmitterPreview.$inject = [ 'eventBus', 'canvas', 'elementRegistry', 'config' ];
 
-module.exports = GitterMovePreview;
+module.exports = EmitterPreview;
