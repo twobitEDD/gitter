@@ -70670,8 +70670,68 @@ var EmitterPreview = function EmitterPreview(eventBus, canvas, elementRegistry, 
 
   var emitterPreviewLayer = canvas.getLayer('gitterEmitterPreview');
 
-  eventBus.on('shape.move.start', function (_ref) {
-    var context = _ref.context;
+  var ignoreSelectionChanged = false;
+
+  eventBus.on('selection.changed', function (_ref) {
+    var newSelection = _ref.newSelection;
+
+
+    if (ignoreSelectionChanged) {
+      return;
+    }
+
+    (0, _clear2.default)(emitterPreviewLayer);
+
+    if (newSelection.length !== 1) {
+      return;
+    }
+
+    if ((0, _GitterUtil.isEmitter)(newSelection[0])) {
+      var emitter = newSelection[0];
+
+      var x = emitter.x,
+          y = emitter.y,
+          width = emitter.width,
+          timeSignature = emitter.timeSignature;
+
+
+      var cx = Math.round(x + width / 2);
+      var cy = Math.round(y + width / 2);
+
+      var preview = createEmitterPreview(cx, cy, timeSignature, maxDistance, offsetDistance);
+
+      (0, _append2.default)(emitterPreviewLayer, preview);
+    }
+  });
+
+  eventBus.on(['commandStack.gitter.changeProperties.executed', 'commandStack.gitter.changeProperties.reverted'], function (context) {
+    (0, _clear2.default)(emitterPreviewLayer);
+
+    var element = context.context.element;
+
+    if ((0, _GitterUtil.isEmitter)(element)) {
+      var emitter = element;
+
+      var x = emitter.x,
+          y = emitter.y,
+          width = emitter.width,
+          timeSignature = emitter.timeSignature;
+
+
+      var cx = Math.round(x + width / 2);
+      var cy = Math.round(y + width / 2);
+
+      var preview = createEmitterPreview(cx, cy, timeSignature, maxDistance, offsetDistance);
+
+      (0, _append2.default)(emitterPreviewLayer, preview);
+    }
+  });
+
+  eventBus.on('shape.move.start', function (_ref2) {
+    var context = _ref2.context;
+
+    ignoreSelectionChanged = true;
+
     var shapes = context.shapes;
 
 
@@ -70709,18 +70769,22 @@ var EmitterPreview = function EmitterPreview(eventBus, canvas, elementRegistry, 
     });
   });
 
-  eventBus.on('shape.move.move', function (_ref2) {
-    var dx = _ref2.dx,
-        dy = _ref2.dy,
-        context = _ref2.context;
+  eventBus.on('shape.move.move', function (_ref3) {
+    var dx = _ref3.dx,
+        dy = _ref3.dy,
+        context = _ref3.context;
     var movingGroup = context.movingGroup;
 
 
     translate(movingGroup, dx, dy);
   });
 
-  eventBus.on('create.start', function (_ref3) {
-    var shape = _ref3.shape;
+  eventBus.on('create.start', function (_ref4) {
+    var shape = _ref4.shape;
+
+    (0, _clear2.default)(emitterPreviewLayer);
+
+    ignoreSelectionChanged = true;
 
     if ((0, _GitterUtil.isListener)(shape)) {
       var emitters = elementRegistry.filter(function (e) {
@@ -70744,7 +70808,9 @@ var EmitterPreview = function EmitterPreview(eventBus, canvas, elementRegistry, 
     }
   });
 
-  eventBus.on(['shape.move.end', 'shape.move.cancel', 'create.end', 'create.cancel'], function () {
+  eventBus.on(['shape.move.end', 'shape.move.cancel', 'shape.move.rejected', 'create.end', 'create.cancel'], function () {
+    ignoreSelectionChanged = false;
+
     (0, _clear2.default)(emitterPreviewLayer);
   });
 };

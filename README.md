@@ -6,6 +6,4 @@
 
 > This project is in early development stage.
 
-![Screenshot](docs/screenshot.png)
-
-[DEMO](https://philippfromme.github.io/gitter)
+![Screenshot](docs/screencast.gif)

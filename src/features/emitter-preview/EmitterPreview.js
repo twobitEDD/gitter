@@ -41,7 +41,59 @@ class EmitterPreview {
 
     const emitterPreviewLayer = canvas.getLayer('gitterEmitterPreview');
 
+    let ignoreSelectionChanged = false;
+
+    eventBus.on('selection.changed', ({ newSelection }) => {
+
+      if (ignoreSelectionChanged) {
+        return;
+      }
+
+      svgClear(emitterPreviewLayer);
+
+      if (newSelection.length !== 1) {
+        return;
+      }
+
+      if (isEmitter(newSelection[0])) {
+        const emitter = newSelection[0];
+
+        const { x, y, width, timeSignature } = emitter;
+
+        const cx = Math.round(x + (width / 2));
+        const cy = Math.round(y + (width / 2));
+
+        const preview = createEmitterPreview(cx, cy, timeSignature, maxDistance, offsetDistance);
+
+        svgAppend(emitterPreviewLayer, preview);
+      }
+    });
+
+    eventBus.on([
+      'commandStack.gitter.changeProperties.executed',
+      'commandStack.gitter.changeProperties.reverted'
+    ], (context) => {
+      svgClear(emitterPreviewLayer);
+
+      const element = context.context.element;
+
+      if (isEmitter(element)) {
+        const emitter = element;
+
+        const { x, y, width, timeSignature } = emitter;
+
+        const cx = Math.round(x + (width / 2));
+        const cy = Math.round(y + (width / 2));
+
+        const preview = createEmitterPreview(cx, cy, timeSignature, maxDistance, offsetDistance);
+
+        svgAppend(emitterPreviewLayer, preview);
+      }
+    });
+
     eventBus.on('shape.move.start',({ context }) => {
+      ignoreSelectionChanged = true;
+
       const { shapes } = context;
 
       const hasMovingListeners = shapes.filter(s => isListener(s)).length;
@@ -77,6 +129,10 @@ class EmitterPreview {
     });
 
     eventBus.on('create.start', ({ shape }) => {
+      svgClear(emitterPreviewLayer);
+
+      ignoreSelectionChanged = true;
+
       if (isListener(shape)) {
         const emitters = elementRegistry.filter(e => isEmitter(e));
 
@@ -96,9 +152,12 @@ class EmitterPreview {
     eventBus.on([
       'shape.move.end',
       'shape.move.cancel',
+      'shape.move.rejected',
       'create.end',
       'create.cancel'
     ], () => {
+      ignoreSelectionChanged = false;
+
       svgClear(emitterPreviewLayer);
     });
   }
