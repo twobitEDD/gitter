@@ -10,11 +10,10 @@ function zeros(length) {
   return array;
 }
 
-export function getSequence(distance, maxDistance, offsetDistance, timeSignature) {
-  let index = Math.floor(MEASURES / (maxDistance - offsetDistance) * distance);
+export function getStepIndex(distance, maxDistance, offsetDistance, timeSignature) {
+  let stepIndex = Math.floor(MEASURES / (maxDistance - offsetDistance) * distance);
 
-  const sequence = zeros(MEASURES);
-  index = Math.min(index, 15);
+  stepIndex = Math.min(stepIndex, 15);
 
   // time signature 1/2 -> length = 8
   // time signature 1/4 -> length = 4
@@ -24,9 +23,15 @@ export function getSequence(distance, maxDistance, offsetDistance, timeSignature
 
   // index 10, time signature 1/2 -> index = Math.floor(10 / 8) * 8 -> 8
   // index 10, time signature 1/8 -> index = Math.floor(10 / 2) * 2 -> 10
-  index = Math.floor(index / length) * length;
+  return Math.floor(stepIndex / length) * length;
+}
 
-  sequence[index] = 1;
+export function getSequence(distance, maxDistance, offsetDistance, timeSignature) {
+  const sequence = zeros(MEASURES);
+
+  const stepIndex = getStepIndex(distance, maxDistance, offsetDistance, timeSignature);
+
+  sequence[stepIndex] = 1;
 
   return sequence;
 }

@@ -16,7 +16,7 @@ class ListenerAnimation {
 
       const circle = svgCreate('circle');
 
-      let radius = 30;
+      let radius = 20;
 
       svgAttr(circle, {
         cx: Math.round(x + (width / 2)),
@@ -32,10 +32,23 @@ class ListenerAnimation {
       svgAppend(listenerAnimationLayer, circle);
 
       this.circles.push({
+        listener,
         gfx: circle,
         radius,
         created: Date.now()
       });
+    });
+
+    eventBus.on('commandStack.shape.delete.postExecuted', ({ context }) => {
+      const { shape } = context;
+
+      this.circles.forEach(circle => {
+        if (circle.listener === shape) {
+          svgRemove(circle.gfx);
+        }
+      });
+
+      this.circles = this.circles.filter(c => c.listener !== shape);
     });
   }
 
