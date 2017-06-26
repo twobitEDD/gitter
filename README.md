@@ -6,4 +6,4 @@
 
 > This project is in early development stage.
 
-![Screenshot](docs/screencast.gif)
+![Screenshot](docs/screencast-new.gif)
