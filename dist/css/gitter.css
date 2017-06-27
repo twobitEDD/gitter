@@ -165,20 +165,23 @@ svg.new-parent {
   width: 100%;
 }
 
+/**
+ * #fff doesn't work in FF, we have to use %23fff instead
+ */
 .icon-gitter-emitter {
-  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" stroke-width="5" stroke="#999" fill="none" viewBox="0 0 120 120"><circle cx="60" cy="60" r="40"/></svg>');
+  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" stroke-width="5" stroke="%23999" fill="none" viewBox="0 0 120 120"><circle cx="60" cy="60" r="40"/></svg>');
 }
 
 .icon-gitter-emitter:hover {
-  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" stroke-width="5" stroke="#34D1BF" fill="none" viewBox="0 0 120 120"><circle cx="60" cy="60" r="40"/></svg>');
+  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" stroke-width="5" stroke="%2334D1BF" fill="none" viewBox="0 0 120 120"><circle cx="60" cy="60" r="40"/></svg>');
 }
 
 .icon-gitter-listener {
-  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" stroke-width="5" stroke="#999" fill="none" viewBox="0 0 120 120"><circle cx="60" cy="60" r="40"/><circle cx="60" cy="60" r="20"/></svg>');
+  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" stroke-width="5" stroke="%23999" fill="none" viewBox="0 0 120 120"><circle cx="60" cy="60" r="40"/><circle cx="60" cy="60" r="20"/></svg>');
 }
 
 .icon-gitter-listener:hover {
-  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" stroke-width="5" stroke="#D1345B" fill="none" viewBox="0 0 120 120"><circle cx="60" cy="60" r="40"/><circle stroke="#34D1BF" cx="60" cy="60" r="20"/></svg>');
+  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" stroke-width="5" stroke="%23D1345B" fill="none" viewBox="0 0 120 120"><circle cx="60" cy="60" r="40"/><circle stroke="%2334D1BF" cx="60" cy="60" r="20"/></svg>');
 }
 
 .icon-lasso-tool {
