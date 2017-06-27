@@ -70610,15 +70610,36 @@ var EmissionAnimation = function () {
       _this.createEmitterAnimation(connection);
     });
 
+    eventBus.on('commandStack.connection.delete.postExecuted', function (_ref4) {
+      var context = _ref4.context;
+      var source = context.source,
+          target = context.target;
+
+
+      _this.impulses.forEach(function (_ref5) {
+        var emitter = _ref5.emitter,
+            listener = _ref5.listener,
+            gfxGroup = _ref5.gfxGroup;
+
+        if (source === emitter && target === listener) {
+          (0, _remove2.default)(gfxGroup);
+        }
+      });
+
+      _this.impulses = _this.impulses.filter(function (i) {
+        return i.emitter !== source && i.listener !== target;
+      });
+    });
+
     // start animation loop
     this.updateAnimation();
   }
 
   _createClass(EmissionAnimation, [{
     key: 'createEmitterAnimation',
-    value: function createEmitterAnimation(_ref4) {
-      var source = _ref4.source,
-          target = _ref4.target;
+    value: function createEmitterAnimation(_ref6) {
+      var source = _ref6.source,
+          target = _ref6.target;
 
       var _canvas$getRootElemen = this._canvas.getRootElement(),
           tempo = _canvas$getRootElemen.tempo;

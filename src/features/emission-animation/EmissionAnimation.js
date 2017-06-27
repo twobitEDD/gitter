@@ -71,6 +71,19 @@ class EmissionAnimation {
       this.createEmitterAnimation(connection);
     });
 
+    eventBus.on('commandStack.connection.delete.postExecuted', ({ context }) => {
+      const { source, target } = context;
+
+      this.impulses.forEach(({ emitter, listener, gfxGroup}) => {
+        if (source === emitter && target === listener) {
+          svgRemove(gfxGroup);
+        }
+      });
+
+      this.impulses =
+        this.impulses.filter(i => i.emitter !== source && i.listener !== target);
+    });
+
     // start animation loop
     this.updateAnimation();
   }
