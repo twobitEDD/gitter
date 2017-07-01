@@ -1,8 +1,5 @@
 import Diagram from 'diagram-js';
 
-// overridden diagram-js modules
-import overriddenModules from './features/overridden';
-
 // gitter modules
 import autoConnect from './features/auto-connect';
 import config from './config';
@@ -12,6 +9,7 @@ import emissionAnimation from './features/emission-animation';
 import emitterAnimation from './features/emitter-animation';
 import gitterContextPad from './features/context-pad';
 import gitterEmitterPreview from './features/emitter-preview';
+import gitterMovePreview from './features/move-preview';
 import gitterPalette from './features/palette';
 import helpOverlay from './features/help-overlay';
 import keyboardBindings from './features/keyboard-bindings';
@@ -50,7 +48,10 @@ class Gitter extends Diagram {
       require('diagram-js/lib/features/popup-menu'),
       require('diagram-js/lib/features/editor-actions'),
       require('diagram-js/lib/features/keyboard'),
-      overriddenModules
+      
+      {
+        movePreview: [ 'value', 'foo' ]
+      }
     ];
 
     const gitterModules = [
@@ -61,6 +62,7 @@ class Gitter extends Diagram {
       emitterAnimation,
       gitterContextPad,
       gitterEmitterPreview,
+      gitterMovePreview,
       gitterPalette,
       gitterRules,
       helpOverlay,

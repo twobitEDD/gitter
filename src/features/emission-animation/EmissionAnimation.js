@@ -31,6 +31,7 @@ class EmissionAnimation {
 
     this.audioContext = p5.prototype.getAudioContext();
 
+    console.log('creating emission animation layer');
     this.emissionAnimationLayer = canvas.getLayer('gitterEmissionAnimation', -700);
 
     this.impulses = [];
@@ -134,6 +135,7 @@ class EmissionAnimation {
       Math.atan2(listenerMid.x - emitterMid.x, listenerMid.y - emitterMid.y)
       * 180 / Math.PI;
 
+    // TODO: fix
     rotate(gfxRect, - rotation - 90);
 
     svgAppend(gfxGroup, gfxRect);

@@ -99,9 +99,6 @@ class CustomRenderer extends BaseRenderer {
         stroke: config.emitterColor
       };
 
-      const source = element.source,
-            target = element.target;
-
       return svgAppend(p, createLine(element.waypoints, attrs));
     };
 
