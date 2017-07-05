@@ -43,7 +43,13 @@ class Audio extends CommandInterceptor {
     eventBus.on('gitter.sounds.loaded', () => {
       const allSounds = sounds.getAllSounds();
 
-      Object.values(allSounds).forEach(({ sound }) => {
+      Object.values(allSounds).forEach(soundObject => {
+        const { sound, label } = soundObject;
+
+        if (label === 'None') {
+          return;
+        }
+
         reverb.process(sound, 1, 2); // reverb time, decay rate
         delay.process(sound, .12, .1, 2300); // delay time, feedback, filter frequency
       });

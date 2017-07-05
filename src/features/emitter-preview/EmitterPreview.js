@@ -71,11 +71,13 @@ class EmitterPreview {
 
     eventBus.on([
       'commandStack.gitter.changeProperties.executed',
-      'commandStack.gitter.changeProperties.reverted'
-    ], (context) => {
+      'commandStack.gitter.changeProperties.reverted',
+      'commandStack.shape.move.executed',
+      'commandStack.shape.move.reverted'
+    ], ({ context }) => {
       svgClear(emitterPreviewLayer);
 
-      const element = context.context.element;
+      const element = context.element || context.shape;
 
       if (isEmitter(element)) {
         const emitter = element;

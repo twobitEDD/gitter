@@ -15,7 +15,7 @@ export default {
     { id: '8', label: '1/8' },
     { id: '16', label: '1/16' },
   ],
-  initialSound: 'kick-1',
+  initialSound: null,
   sounds: [
     { id: 'kick-1', label: 'Kick 1', path: './audio/kick-1.wav' },
     { id: 'kick-2', label: 'Kick 2', path: './audio/kick-2.wav' },
@@ -26,7 +26,6 @@ export default {
     { id: 'closedhat-2', label: 'Closed Hihat 2', path: './audio/closedhat-2.wav' },
     { id: 'openhat-1', label: 'Open Hihat', path: './audio/openhat-1.wav' },
     { id: 'tom-1', label: 'Tom 1', path: './audio/tom-1.wav' },
-    { id: 'tom-2', label: 'Tom 2', path: './audio/tom-2.wav' },
-    { id: 'impact', label: 'FX', path: './audio/impact.wav' }
+    { id: 'tom-2', label: 'Tom 2', path: './audio/tom-2.wav' }
     ]
 };

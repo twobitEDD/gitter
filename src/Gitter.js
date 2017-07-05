@@ -22,6 +22,7 @@ import ordering from './features/ordering';
 import propertiesPanel from './features/properties-panel';
 import gitterRules from './features/rules';
 import sequences from './features/sequences';
+import soundSelect from './features/sound-select';
 
 class Gitter extends Diagram {
   constructor(options) {
@@ -69,7 +70,8 @@ class Gitter extends Diagram {
       notifications,
       ordering,
       propertiesPanel,
-      sequences
+      sequences,
+      soundSelect
     ];
 
     super({

@@ -7,7 +7,15 @@ class Sounds {
     this._config = config;
     this._loadingOverlay = loadingOverlay;
 
-    this._sounds = {};
+    this._sounds = {
+      none: {
+        sound: {
+          rate() { console.log('rate'); },
+          play() { console.log('play'); }
+        },
+        label: 'None'
+      }
+    };
 
     this.loadSounds();
   }
@@ -42,6 +50,10 @@ class Sounds {
   getSound(soundId) {
     if (this._sounds[soundId]) {
       return this._sounds[soundId];
+    } else {
+
+      // return mock sound
+      return this._sounds.none;
     }
   }
 

@@ -272,7 +272,7 @@ svg.new-parent {
 .notifications .notification {
   color: #999;
   border-right: solid 1px #999;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.75);
   padding: 10px;
   text-align: right;
 }
@@ -297,7 +297,7 @@ svg.new-parent {
   z-index: 100000;
   top: 0;
   left: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.75);
   color: #fff;
   font-size: 18px;
 }
@@ -308,4 +308,44 @@ svg.new-parent {
 
 .loading-overlay.hidden {
   display: none;
+}
+
+/** sound select overlay */
+#sound-select-overlay {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  padding: 10px;
+  z-index: 100000;
+  top: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.75);
+  color: #fff;
+  font-size: 18px;
+  box-sizing: border-box;
+}
+
+#sound-select-overlay .title {
+  margin-bottom: 20px;
+}
+
+#sound-select-overlay.hidden {
+  display: none;
+}
+
+#sound-select-overlay .sound-select-button {
+  display: inline-block;
+  width: 20%;
+  margin: 0 10px 10px 0;
+  padding: 10px;
+  border: solid 2px #fff;
+  user-select: none;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+#sound-select-overlay .sound-select-button:hover {
+  cursor: default;
+  background-color: #fff;
+  color: #000;
 }

@@ -10,6 +10,7 @@ const IGNORED_COMMANDS = [
   'connection.create',
   'connection.layout',
   'connection.move',
+  'connection.delete',
   'gitter.changeRootProperties',
   'gitter.changeEmitterProperties',
   'gitter.changeListenerProperties',
