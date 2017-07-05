@@ -5,7 +5,7 @@ import svgRemove from 'tiny-svg/lib/remove';
 
 class ListenerAnimation {
   constructor(eventBus, canvas, config) {
-    const listenerAnimationLayer = canvas.getLayer('gitterListenerAnimation');
+    const listenerAnimationLayer = canvas.getLayer('gitterListenerAnimation', -800);
 
     this.circles = [];
 

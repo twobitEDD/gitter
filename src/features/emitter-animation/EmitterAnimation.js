@@ -7,7 +7,7 @@ import { isEmitter } from '../../util/GitterUtil';
 
 class EmitterAnimation {
   constructor(eventBus, canvas, config, elementRegistry) {
-    const emitterAnimationLayer = canvas.getLayer('gitterEmitterAnimation');
+    const emitterAnimationLayer = canvas.getLayer('gitterEmitterAnimation', -900);
 
     this.circles = [];
 

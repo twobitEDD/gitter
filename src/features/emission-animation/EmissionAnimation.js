@@ -31,7 +31,7 @@ class EmissionAnimation {
 
     this.audioContext = p5.prototype.getAudioContext();
 
-    this.emissionAnimationLayer = canvas.getLayer('gitterEmissionAnimation');
+    this.emissionAnimationLayer = canvas.getLayer('gitterEmissionAnimation', -700);
 
     this.impulses = [];
 
@@ -81,7 +81,7 @@ class EmissionAnimation {
       });
 
       this.impulses =
-        this.impulses.filter(i => i.emitter !== source && i.listener !== target);
+        this.impulses.filter(i => i.emitter.id !== source.id || i.listener.id !== target.id);
     });
 
     // start animation loop

@@ -48735,8 +48735,9 @@ EventBus.prototype.off = function (event, callback) {
  */
 EventBus.prototype.fire = function (type, data) {
 
-  // if (type === 'commandStack.shape.move.postExecute' || type === 'shape.delete')
+  // if (false && type.includes('connection')) {
   //   console.log(type, data);
+  // }
 
   var event, listeners, returnValue, args;
 
@@ -57491,11 +57492,13 @@ function createContainer(options) {
   return parent;
 }
 
-function createGroup(parent, cls) {
+function createGroup(parent, cls, childIndex) {
   var group = svgCreate('g');
   svgClasses(group).add(cls);
 
-  svgAppend(parent, group);
+  var index = childIndex || parent.children.length - 1;
+
+  parent.insertBefore(group, parent.children[index]);
 
   return group;
 }
@@ -57641,7 +57644,7 @@ Canvas.prototype._clear = function () {
  * @returns {Snap<SVGGroup>}
  */
 Canvas.prototype.getDefaultLayer = function () {
-  return this.getLayer(BASE_LAYER);
+  return this.getLayer(BASE_LAYER, 0);
 };
 
 /**
@@ -57652,7 +57655,7 @@ Canvas.prototype.getDefaultLayer = function () {
  *
  * @returns {Snap<SVGGroup>}
  */
-Canvas.prototype.getLayer = function (name) {
+Canvas.prototype.getLayer = function (name, index) {
 
   if (!name) {
     throw new Error('must specify a name');
@@ -57660,10 +57663,21 @@ Canvas.prototype.getLayer = function (name) {
 
   var layer = this._layers[name];
   if (!layer) {
-    layer = this._layers[name] = createGroup(this._viewport, 'layer-' + name);
+    var childIndex = 0;
+
+    Object.values(this._layers).forEach(function (layer) {
+      if (index > layer.index) {
+        childIndex++;
+      }
+    });
+
+    layer = this._layers[name] = {
+      group: createGroup(this._viewport, 'layer-' + name, childIndex),
+      index: index
+    };
   }
 
-  return layer;
+  return layer.group;
 };
 
 /**
@@ -69380,7 +69394,7 @@ exports.default = {
   initialTimeSignature: '8',
   timeSignatures: [{ id: '2', label: '1/2' }, { id: '4', label: '1/4' }, { id: '8', label: '1/8' }, { id: '16', label: '1/16' }],
   initialSound: 'kick-1',
-  sounds: [{ id: 'kick-1', label: 'Kick 1', path: './audio/kick-1.wav' }, { id: 'kick-2', label: 'Kick 2', path: './audio/kick-2.wav' }, { id: 'snare', label: 'Snare', path: './audio/snare.wav' }, { id: 'clap-1', label: 'Clap 1', path: './audio/clap-1.wav' }, { id: 'clap-2', label: 'Clap 2', path: './audio/clap-2.wav' }, { id: 'closedhat-1', label: 'Closed Hihat 1', path: './audio/closedhat-1.wav' }, { id: 'closedhat-2', label: 'Closed Hihat 2', path: './audio/closedhat-2.wav' }, { id: 'openhat-1', label: 'Open Hihat', path: './audio/openhat-1.wav' }, { id: 'impact', label: 'Impact', path: './audio/impact.wav' }, { id: 'shaker-1', label: 'Shaker', path: './audio/shaker-1.wav' }, { id: 'tom-1', label: 'Tom 1', path: './audio/tom-1.wav' }, { id: 'tom-2', label: 'Tom 2', path: './audio/tom-2.wav' }]
+  sounds: [{ id: 'kick-1', label: 'Kick 1', path: './audio/kick-1.wav' }, { id: 'kick-2', label: 'Kick 2', path: './audio/kick-2.wav' }, { id: 'clap-1', label: 'Clap 1', path: './audio/clap-1.wav' }, { id: 'clap-2', label: 'Clap 2', path: './audio/clap-2.wav' }, { id: 'snare', label: 'Snare', path: './audio/snare.wav' }, { id: 'closedhat-1', label: 'Closed Hihat 1', path: './audio/closedhat-1.wav' }, { id: 'closedhat-2', label: 'Closed Hihat 2', path: './audio/closedhat-2.wav' }, { id: 'openhat-1', label: 'Open Hihat', path: './audio/openhat-1.wav' }, { id: 'tom-1', label: 'Tom 1', path: './audio/tom-1.wav' }, { id: 'tom-2', label: 'Tom 2', path: './audio/tom-2.wav' }, { id: 'impact', label: 'FX', path: './audio/impact.wav' }]
 };
 
 /***/ }),
@@ -70299,10 +70313,16 @@ var AutoConnect = function (_CommandInterceptor) {
 
       shapes.forEach(function (shape) {
         if ((0, _GitterUtil.isEmitter)(shape)) {
+          var remove = [];
+
           shape.outgoing.forEach(function (outgoing) {
             if (!gitterRules.canConnect(shape, outgoing.target)) {
-              modeling.removeConnection(outgoing);
+              remove.push(outgoing);
             }
+          });
+
+          remove.forEach(function (c) {
+            return modeling.removeConnection(c);
           });
 
           var listeners = elementRegistry.filter(function (elements) {
@@ -70559,7 +70579,7 @@ var EmissionAnimation = function () {
 
     this.audioContext = p5.prototype.getAudioContext();
 
-    this.emissionAnimationLayer = canvas.getLayer('gitterEmissionAnimation');
+    this.emissionAnimationLayer = canvas.getLayer('gitterEmissionAnimation', -700);
 
     this.impulses = [];
 
@@ -70627,7 +70647,7 @@ var EmissionAnimation = function () {
       });
 
       _this.impulses = _this.impulses.filter(function (i) {
-        return i.emitter !== source && i.listener !== target;
+        return i.emitter.id !== source.id || i.listener.id !== target.id;
       });
     });
 
@@ -70824,7 +70844,7 @@ var EmitterAnimation = function () {
 
     _classCallCheck(this, EmitterAnimation);
 
-    var emitterAnimationLayer = canvas.getLayer('gitterEmitterAnimation');
+    var emitterAnimationLayer = canvas.getLayer('gitterEmitterAnimation', -900);
 
     this.circles = [];
 
@@ -71010,7 +71030,7 @@ var EmitterPreview = function EmitterPreview(eventBus, canvas, elementRegistry, 
       offsetDistance = config.offsetDistance;
 
 
-  var emitterPreviewLayer = canvas.getLayer('gitterEmitterPreview');
+  var emitterPreviewLayer = canvas.getLayer('gitterEmitterPreview', -1000);
 
   var ignoreSelectionChanged = false;
 
@@ -71424,7 +71444,7 @@ var ListenerAnimation = function () {
 
     _classCallCheck(this, ListenerAnimation);
 
-    var listenerAnimationLayer = canvas.getLayer('gitterListenerAnimation');
+    var listenerAnimationLayer = canvas.getLayer('gitterListenerAnimation', -800);
 
     this.circles = [];
 

@@ -39,7 +39,7 @@ class EmitterPreview {
   constructor(eventBus, canvas, elementRegistry, config) {
     const { maxDistance, offsetDistance } = config;
 
-    const emitterPreviewLayer = canvas.getLayer('gitterEmitterPreview');
+    const emitterPreviewLayer = canvas.getLayer('gitterEmitterPreview', -1000);
 
     let ignoreSelectionChanged = false;
 

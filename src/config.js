@@ -19,15 +19,14 @@ export default {
   sounds: [
     { id: 'kick-1', label: 'Kick 1', path: './audio/kick-1.wav' },
     { id: 'kick-2', label: 'Kick 2', path: './audio/kick-2.wav' },
-    { id: 'snare', label: 'Snare', path: './audio/snare.wav' },
     { id: 'clap-1', label: 'Clap 1', path: './audio/clap-1.wav' },
     { id: 'clap-2', label: 'Clap 2', path: './audio/clap-2.wav' },
+    { id: 'snare', label: 'Snare', path: './audio/snare.wav' },
     { id: 'closedhat-1', label: 'Closed Hihat 1', path: './audio/closedhat-1.wav' },
     { id: 'closedhat-2', label: 'Closed Hihat 2', path: './audio/closedhat-2.wav' },
     { id: 'openhat-1', label: 'Open Hihat', path: './audio/openhat-1.wav' },
-    { id: 'impact', label: 'Impact', path: './audio/impact.wav' },
-    { id: 'shaker-1', label: 'Shaker', path: './audio/shaker-1.wav' },
     { id: 'tom-1', label: 'Tom 1', path: './audio/tom-1.wav' },
     { id: 'tom-2', label: 'Tom 2', path: './audio/tom-2.wav' },
+    { id: 'impact', label: 'FX', path: './audio/impact.wav' }
     ]
 };

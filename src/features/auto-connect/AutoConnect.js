@@ -59,11 +59,15 @@ class AutoConnect extends CommandInterceptor {
 
       shapes.forEach(shape => {
         if (isEmitter(shape)) {
+          var remove = [];
+
           shape.outgoing.forEach(outgoing => {
             if (!gitterRules.canConnect(shape, outgoing.target)) {
-              modeling.removeConnection(outgoing);
+              remove.push(outgoing);
             }
           });
+
+          remove.forEach(c => modeling.removeConnection(c));
 
           const listeners = elementRegistry.filter(elements => {
             return isListener(elements);
