@@ -21,7 +21,7 @@ class PropertiesPanel {
 
     this.entryFactory = new EntryFactory();
 
-    this.currentElement = null;
+    this.currentElement = undefined;
     this.isClosed = false;
     this.ignoreSelectionChanges = false;
 
@@ -228,7 +228,7 @@ class PropertiesPanel {
 
       this.$title.textContent = 'ROOT';
 
-      let oldTempo = null;
+      let oldTempo = undefined;
 
       // create root entries
       this.updateEntries([
@@ -240,7 +240,7 @@ class PropertiesPanel {
           max: 140,
           step: 1,
           onInput: value => {
-            if (oldTempo === null) {
+            if (!oldTempo) {
               oldTempo = element.tempo;
             }
 
@@ -255,7 +255,7 @@ class PropertiesPanel {
 
             this.changeProperties(element, { tempo: value });
 
-            oldTempo = null;
+            oldTempo = undefined;
           }
         }
       ]);

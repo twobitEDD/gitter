@@ -15,7 +15,7 @@ export default {
     { id: '8', label: '1/8' },
     { id: '16', label: '1/16' },
   ],
-  initialSound: null,
+  initialSound: undefined,
   sounds: [
     { id: 'kick-1', label: 'Kick 1', path: './audio/kick-1.wav' },
     { id: 'kick-2', label: 'Kick 2', path: './audio/kick-2.wav' },
