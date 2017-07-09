@@ -103,6 +103,10 @@ class Audio extends CommandInterceptor {
   getMainPart() {
     return this.mainPart;
   }
+
+  getAllPhrases() {
+    return this.phrases;
+  }
 }
 
 Audio.$inject = [ 'commandStack', 'elementRegistry', 'eventBus', 'sounds' ];

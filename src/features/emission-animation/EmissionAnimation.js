@@ -31,7 +31,6 @@ class EmissionAnimation {
 
     this.audioContext = p5.prototype.getAudioContext();
 
-    console.log('creating emission animation layer');
     this.emissionAnimationLayer = canvas.getLayer('gitterEmissionAnimation', -700);
 
     this.impulses = [];
