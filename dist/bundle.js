@@ -71,7 +71,7 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 var getNative = __webpack_require__(28),
-    isLength = __webpack_require__(19),
+    isLength = __webpack_require__(20),
     isObjectLike = __webpack_require__(11);
 
 /** `Object#toString` result references. */
@@ -973,6 +973,150 @@ module.exports = baseEach;
 
 /***/ }),
 /* 17 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var forEach = __webpack_require__(1),
+    isFunction = __webpack_require__(47),
+    isArray = __webpack_require__(0),
+    isNumber = __webpack_require__(59);
+
+var DEFAULT_PRIORITY = 1000;
+
+function isObject(element) {
+  return typeof element === 'object';
+}
+
+/**
+ * A utility that can be used to plug-in into the command execution for
+ * extension and/or validation.
+ *
+ * @param {EventBus} eventBus
+ *
+ * @example
+ *
+ * var inherits = require('inherits');
+ *
+ * var CommandInterceptor = require('diagram-js/lib/command/CommandInterceptor');
+ *
+ * function CommandLogger(eventBus) {
+ *   CommandInterceptor.call(this, eventBus);
+ *
+ *   this.preExecute(function(event) {
+ *     console.log('command pre-execute', event);
+ *   });
+ * }
+ *
+ * inherits(CommandLogger, CommandInterceptor);
+ *
+ */
+function CommandInterceptor(eventBus) {
+  this._eventBus = eventBus;
+}
+
+CommandInterceptor.$inject = ['eventBus'];
+
+module.exports = CommandInterceptor;
+
+function unwrapEvent(fn, that) {
+  return function (event) {
+    return fn.call(that || null, event.context, event.command, event);
+  };
+}
+
+/**
+ * Register an interceptor for a command execution
+ *
+ * @param {String|Array<String>} [events] list of commands to register on
+ * @param {String} [hook] command hook, i.e. preExecute, executed to listen on
+ * @param {Number} [priority] the priority on which to hook into the execution
+ * @param {Function} handlerFn interceptor to be invoked with (event)
+ * @param {Boolean} unwrap if true, unwrap the event and pass (context, command, event) to the
+ *                          listener instead
+ * @param {Object} [that] Pass context (`this`) to the handler function
+ */
+CommandInterceptor.prototype.on = function (events, hook, priority, handlerFn, unwrap, that) {
+
+  if (isFunction(hook) || isNumber(hook)) {
+    that = unwrap;
+    unwrap = handlerFn;
+    handlerFn = priority;
+    priority = hook;
+    hook = null;
+  }
+
+  if (isFunction(priority)) {
+    that = unwrap;
+    unwrap = handlerFn;
+    handlerFn = priority;
+    priority = DEFAULT_PRIORITY;
+  }
+
+  if (isObject(unwrap)) {
+    that = unwrap;
+    unwrap = false;
+  }
+
+  if (!isFunction(handlerFn)) {
+    throw new Error('handlerFn must be a function');
+  }
+
+  if (!isArray(events)) {
+    events = [events];
+  }
+
+  var eventBus = this._eventBus;
+
+  forEach(events, function (event) {
+    // concat commandStack(.event)?(.hook)?
+    var fullEvent = ['commandStack', event, hook].filter(function (e) {
+      return e;
+    }).join('.');
+
+    eventBus.on(fullEvent, priority, unwrap ? unwrapEvent(handlerFn, that) : handlerFn, that);
+  });
+};
+
+var hooks = ['canExecute', 'preExecute', 'preExecuted', 'execute', 'executed', 'postExecute', 'postExecuted', 'revert', 'reverted'];
+
+/*
+ * Install hook shortcuts
+ *
+ * This will generate the CommandInterceptor#(preExecute|...|reverted) methods
+ * which will in term forward to CommandInterceptor#on.
+ */
+forEach(hooks, function (hook) {
+
+  /**
+   * {canExecute|preExecute|preExecuted|execute|executed|postExecute|postExecuted|revert|reverted}
+   *
+   * A named hook for plugging into the command execution
+   *
+   * @param {String|Array<String>} [events] list of commands to register on
+   * @param {Number} [priority] the priority on which to hook into the execution
+   * @param {Function} handlerFn interceptor to be invoked with (event)
+   * @param {Boolean} [unwrap=false] if true, unwrap the event and pass (context, command, event) to the
+   *                          listener instead
+   * @param {Object} [that] Pass context (`this`) to the handler function
+   */
+  CommandInterceptor.prototype[hook] = function (events, priority, handlerFn, unwrap, that) {
+
+    if (isFunction(events) || isNumber(events)) {
+      that = unwrap;
+      unwrap = handlerFn;
+      handlerFn = priority;
+      priority = events;
+      events = null;
+    }
+
+    this.on(events, hook, priority, handlerFn, unwrap, that);
+  };
+});
+
+/***/ }),
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {var require;var require;/*! p5.js v0.5.11 June 01, 2017 */
@@ -36085,7 +36229,7 @@ module.exports = {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(14)))
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var isArrayLike = __webpack_require__(46),
@@ -36119,7 +36263,7 @@ module.exports = isIterateeCall;
 
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports) {
 
 /**
@@ -36145,7 +36289,7 @@ module.exports = isLength;
 
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var getNative = __webpack_require__(28),
@@ -36196,154 +36340,10 @@ module.exports = keys;
 
 
 /***/ }),
-/* 21 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(76);
-
-/***/ }),
 /* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
-
-
-var forEach = __webpack_require__(1),
-    isFunction = __webpack_require__(47),
-    isArray = __webpack_require__(0),
-    isNumber = __webpack_require__(59);
-
-var DEFAULT_PRIORITY = 1000;
-
-function isObject(element) {
-  return typeof element === 'object';
-}
-
-/**
- * A utility that can be used to plug-in into the command execution for
- * extension and/or validation.
- *
- * @param {EventBus} eventBus
- *
- * @example
- *
- * var inherits = require('inherits');
- *
- * var CommandInterceptor = require('diagram-js/lib/command/CommandInterceptor');
- *
- * function CommandLogger(eventBus) {
- *   CommandInterceptor.call(this, eventBus);
- *
- *   this.preExecute(function(event) {
- *     console.log('command pre-execute', event);
- *   });
- * }
- *
- * inherits(CommandLogger, CommandInterceptor);
- *
- */
-function CommandInterceptor(eventBus) {
-  this._eventBus = eventBus;
-}
-
-CommandInterceptor.$inject = ['eventBus'];
-
-module.exports = CommandInterceptor;
-
-function unwrapEvent(fn, that) {
-  return function (event) {
-    return fn.call(that || null, event.context, event.command, event);
-  };
-}
-
-/**
- * Register an interceptor for a command execution
- *
- * @param {String|Array<String>} [events] list of commands to register on
- * @param {String} [hook] command hook, i.e. preExecute, executed to listen on
- * @param {Number} [priority] the priority on which to hook into the execution
- * @param {Function} handlerFn interceptor to be invoked with (event)
- * @param {Boolean} unwrap if true, unwrap the event and pass (context, command, event) to the
- *                          listener instead
- * @param {Object} [that] Pass context (`this`) to the handler function
- */
-CommandInterceptor.prototype.on = function (events, hook, priority, handlerFn, unwrap, that) {
-
-  if (isFunction(hook) || isNumber(hook)) {
-    that = unwrap;
-    unwrap = handlerFn;
-    handlerFn = priority;
-    priority = hook;
-    hook = null;
-  }
-
-  if (isFunction(priority)) {
-    that = unwrap;
-    unwrap = handlerFn;
-    handlerFn = priority;
-    priority = DEFAULT_PRIORITY;
-  }
-
-  if (isObject(unwrap)) {
-    that = unwrap;
-    unwrap = false;
-  }
-
-  if (!isFunction(handlerFn)) {
-    throw new Error('handlerFn must be a function');
-  }
-
-  if (!isArray(events)) {
-    events = [events];
-  }
-
-  var eventBus = this._eventBus;
-
-  forEach(events, function (event) {
-    // concat commandStack(.event)?(.hook)?
-    var fullEvent = ['commandStack', event, hook].filter(function (e) {
-      return e;
-    }).join('.');
-
-    eventBus.on(fullEvent, priority, unwrap ? unwrapEvent(handlerFn, that) : handlerFn, that);
-  });
-};
-
-var hooks = ['canExecute', 'preExecute', 'preExecuted', 'execute', 'executed', 'postExecute', 'postExecuted', 'revert', 'reverted'];
-
-/*
- * Install hook shortcuts
- *
- * This will generate the CommandInterceptor#(preExecute|...|reverted) methods
- * which will in term forward to CommandInterceptor#on.
- */
-forEach(hooks, function (hook) {
-
-  /**
-   * {canExecute|preExecute|preExecuted|execute|executed|postExecute|postExecuted|revert|reverted}
-   *
-   * A named hook for plugging into the command execution
-   *
-   * @param {String|Array<String>} [events] list of commands to register on
-   * @param {Number} [priority] the priority on which to hook into the execution
-   * @param {Function} handlerFn interceptor to be invoked with (event)
-   * @param {Boolean} [unwrap=false] if true, unwrap the event and pass (context, command, event) to the
-   *                          listener instead
-   * @param {Object} [that] Pass context (`this`) to the handler function
-   */
-  CommandInterceptor.prototype[hook] = function (events, priority, handlerFn, unwrap, that) {
-
-    if (isFunction(events) || isNumber(events)) {
-      that = unwrap;
-      unwrap = handlerFn;
-      handlerFn = priority;
-      priority = events;
-      events = null;
-    }
-
-    this.on(events, hook, priority, handlerFn, unwrap, that);
-  };
-});
+module.exports = __webpack_require__(76);
 
 /***/ }),
 /* 23 */
@@ -36457,7 +36457,7 @@ module.exports = getNative;
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*! p5.sound.js v0.3.2 2016-11-01 */
 (function (root, factory) {
   if (true)
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(17)], __WEBPACK_AMD_DEFINE_RESULT__ = function (p5) { (factory(p5));}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(18)], __WEBPACK_AMD_DEFINE_RESULT__ = function (p5) { (factory(p5));}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
   else if (typeof exports === 'object')
     factory(require('../p5'));
@@ -46627,7 +46627,7 @@ module.exports = bindCallback;
 /***/ (function(module, exports, __webpack_require__) {
 
 var getLength = __webpack_require__(88),
-    isLength = __webpack_require__(19);
+    isLength = __webpack_require__(20);
 
 /**
  * Checks if `value` is array-like.
@@ -46882,7 +46882,7 @@ var baseCallback = __webpack_require__(8),
     baseMap = __webpack_require__(122),
     baseSortBy = __webpack_require__(220),
     compareAscending = __webpack_require__(227),
-    isIterateeCall = __webpack_require__(18);
+    isIterateeCall = __webpack_require__(19);
 
 /**
  * Creates an array of elements, sorted in ascending order by the results of
@@ -48735,9 +48735,7 @@ EventBus.prototype.off = function (event, callback) {
  */
 EventBus.prototype.fire = function (type, data) {
 
-  // if (false && type.includes('connection')) {
-  //   console.log(type, data);
-  // }
+  // console.log(type, data);
 
   var event, listeners, returnValue, args;
 
@@ -49475,7 +49473,7 @@ module.exports = arraySome;
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseCopy = __webpack_require__(206),
-    keys = __webpack_require__(20);
+    keys = __webpack_require__(21);
 
 /**
  * The base implementation of `_.assign` without support for argument juggling,
@@ -49599,7 +49597,7 @@ module.exports = baseFor;
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseFor = __webpack_require__(118),
-    keys = __webpack_require__(20);
+    keys = __webpack_require__(21);
 
 /**
  * The base implementation of `_.forOwn` without support for callback
@@ -50020,7 +50018,7 @@ module.exports = toPath;
 var isArguments = __webpack_require__(90),
     isArray = __webpack_require__(0),
     isIndex = __webpack_require__(58),
-    isLength = __webpack_require__(19),
+    isLength = __webpack_require__(20),
     isObject = __webpack_require__(3);
 
 /** Used for native method references. */
@@ -51010,7 +51008,7 @@ module.exports = {
 "use strict";
 
 
-var domEvent = __webpack_require__(21),
+var domEvent = __webpack_require__(22),
     stopEvent = __webpack_require__(24).stopEvent;
 
 function trap(event) {
@@ -52084,7 +52082,7 @@ var _Gitter2 = _interopRequireDefault(_Gitter);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var p5 = __webpack_require__(17);
+var p5 = __webpack_require__(18);
 __webpack_require__(26);
 
 var gitter = window.gitter = new _Gitter2.default({ container: '#canvas' });
@@ -52802,7 +52800,7 @@ module.exports = findIndex;
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseFlatten = __webpack_require__(117),
-    isIterateeCall = __webpack_require__(18);
+    isIterateeCall = __webpack_require__(19);
 
 /**
  * Flattens a nested array. If `isDeep` is `true` the array is recursively
@@ -52866,7 +52864,7 @@ module.exports = last;
 
 var baseCallback = __webpack_require__(8),
     baseUniq = __webpack_require__(222),
-    isIterateeCall = __webpack_require__(18),
+    isIterateeCall = __webpack_require__(19),
     sortedUniq = __webpack_require__(257);
 
 /**
@@ -53090,7 +53088,7 @@ var arrayEvery = __webpack_require__(198),
     baseCallback = __webpack_require__(8),
     baseEvery = __webpack_require__(207),
     isArray = __webpack_require__(0),
-    isIterateeCall = __webpack_require__(18);
+    isIterateeCall = __webpack_require__(19);
 
 /**
  * Checks if `predicate` returns truthy for **all** elements of `collection`.
@@ -53159,8 +53157,8 @@ module.exports = every;
 /***/ (function(module, exports, __webpack_require__) {
 
 var getLength = __webpack_require__(88),
-    isLength = __webpack_require__(19),
-    keys = __webpack_require__(20);
+    isLength = __webpack_require__(20),
+    keys = __webpack_require__(21);
 
 /**
  * Gets the size of `collection` by returning its length for array-like
@@ -53198,7 +53196,7 @@ var arraySome = __webpack_require__(114),
     baseCallback = __webpack_require__(8),
     baseSome = __webpack_require__(219),
     isArray = __webpack_require__(0),
-    isIterateeCall = __webpack_require__(18);
+    isIterateeCall = __webpack_require__(19);
 
 /**
  * Checks if `predicate` returns truthy for **any** element of `collection`.
@@ -53635,7 +53633,7 @@ module.exports = arrayReduce;
 /* 203 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var keys = __webpack_require__(20);
+var keys = __webpack_require__(21);
 
 /**
  * A specialized version of `_.assign` for customizing assigned values without
@@ -54676,7 +54674,7 @@ module.exports = createAggregator;
 /***/ (function(module, exports, __webpack_require__) {
 
 var bindCallback = __webpack_require__(45),
-    isIterateeCall = __webpack_require__(18),
+    isIterateeCall = __webpack_require__(19),
     restParam = __webpack_require__(83);
 
 /**
@@ -54723,7 +54721,7 @@ module.exports = createAssigner;
 /***/ (function(module, exports, __webpack_require__) {
 
 var getLength = __webpack_require__(88),
-    isLength = __webpack_require__(19),
+    isLength = __webpack_require__(20),
     toObject = __webpack_require__(12);
 
 /**
@@ -55332,7 +55330,7 @@ module.exports = equalByTag;
 /* 243 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var keys = __webpack_require__(20);
+var keys = __webpack_require__(21);
 
 /** Used for native method references. */
 var objectProto = Object.prototype;
@@ -55853,7 +55851,7 @@ module.exports = reorder;
 var isArguments = __webpack_require__(90),
     isArray = __webpack_require__(0),
     isIndex = __webpack_require__(58),
-    isLength = __webpack_require__(19),
+    isLength = __webpack_require__(20),
     keysIn = __webpack_require__(133);
 
 /** Used for native method references. */
@@ -55958,7 +55956,7 @@ module.exports = wrapperClone;
 
 var baseClone = __webpack_require__(204),
     bindCallback = __webpack_require__(45),
-    isIterateeCall = __webpack_require__(18);
+    isIterateeCall = __webpack_require__(19);
 
 /**
  * Creates a clone of `value`. If `isDeep` is `true` nested objects are cloned,
@@ -56127,7 +56125,7 @@ module.exports = isString;
 /* 262 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var isLength = __webpack_require__(19),
+var isLength = __webpack_require__(20),
     isObjectLike = __webpack_require__(11);
 
 /** `Object#toString` result references. */
@@ -56207,7 +56205,7 @@ module.exports = isTypedArray;
 /* 263 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var keys = __webpack_require__(20),
+var keys = __webpack_require__(21),
     toObject = __webpack_require__(12);
 
 /**
@@ -56295,7 +56293,7 @@ module.exports = pick;
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseValues = __webpack_require__(223),
-    keys = __webpack_require__(20);
+    keys = __webpack_require__(21);
 
 /**
  * Creates an array of the own enumerable property values of `object`.
@@ -59520,7 +59518,7 @@ var isFunction = __webpack_require__(47),
     isArray = __webpack_require__(0),
     forEach = __webpack_require__(1),
     domDelegate = __webpack_require__(61),
-    domEvent = __webpack_require__(21),
+    domEvent = __webpack_require__(22),
     domAttr = __webpack_require__(60),
     domQuery = __webpack_require__(49),
     domClasses = __webpack_require__(48),
@@ -60492,7 +60490,7 @@ var round = Math.round;
 
 var assign = __webpack_require__(2);
 
-var domEvent = __webpack_require__(21),
+var domEvent = __webpack_require__(22),
     Event = __webpack_require__(24),
     ClickTrap = __webpack_require__(150),
     Cursor = __webpack_require__(151);
@@ -61726,7 +61724,7 @@ module.exports = InteractionEvents;
 "use strict";
 
 
-var domEvent = __webpack_require__(21),
+var domEvent = __webpack_require__(22),
     domMatches = __webpack_require__(134);
 
 /**
@@ -64985,7 +64983,7 @@ module.exports = {
 
 var inherits = __webpack_require__(15);
 
-var CommandInterceptor = __webpack_require__(22);
+var CommandInterceptor = __webpack_require__(17);
 
 /**
  * An abstract provider that allows modelers to implement a custom
@@ -65749,7 +65747,7 @@ var domify = __webpack_require__(62),
     domClasses = __webpack_require__(48),
     domMatches = __webpack_require__(134),
     domDelegate = __webpack_require__(61),
-    domEvent = __webpack_require__(21);
+    domEvent = __webpack_require__(22);
 
 var toggleSelector = '.djs-palette-toggle',
     entrySelector = '.entry',
@@ -66649,7 +66647,7 @@ module.exports = {
 
 var inherits = __webpack_require__(15);
 
-var CommandInterceptor = __webpack_require__(22);
+var CommandInterceptor = __webpack_require__(17);
 
 /**
  * A basic provider that may be extended to implement modeling rules.
@@ -67388,7 +67386,7 @@ CroppingConnectionDocking.prototype._getGfx = function (element) {
 var Cursor = __webpack_require__(151),
     ClickTrap = __webpack_require__(150),
     substract = __webpack_require__(99).substract,
-    domEvent = __webpack_require__(21),
+    domEvent = __webpack_require__(22),
     domClosest = __webpack_require__(93),
     EventUtil = __webpack_require__(24);
 
@@ -67488,7 +67486,7 @@ module.exports = {
 "use strict";
 
 
-var domEvent = __webpack_require__(21),
+var domEvent = __webpack_require__(22),
     domClosest = __webpack_require__(93);
 
 var hasPrimaryModifier = __webpack_require__(32).hasPrimaryModifier,
@@ -69410,7 +69408,7 @@ exports.default = {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _CommandInterceptor2 = __webpack_require__(22);
+var _CommandInterceptor2 = __webpack_require__(17);
 
 var _CommandInterceptor3 = _interopRequireDefault(_CommandInterceptor2);
 
@@ -69436,7 +69434,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var p5 = __webpack_require__(17);
+var p5 = __webpack_require__(18);
 __webpack_require__(26);
 
 var Audio = function (_CommandInterceptor) {
@@ -69920,7 +69918,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var p5 = __webpack_require__(17);
+var p5 = __webpack_require__(18);
 __webpack_require__(26);
 
 var Sounds = function () {
@@ -70016,7 +70014,7 @@ var _SequenceUtil = __webpack_require__(34);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var p5 = __webpack_require__(17);
+var p5 = __webpack_require__(18);
 __webpack_require__(26);
 
 var AddSequenceHandler = function () {
@@ -70109,7 +70107,7 @@ var _SequenceUtil = __webpack_require__(34);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var p5 = __webpack_require__(17);
+var p5 = __webpack_require__(18);
 __webpack_require__(26);
 
 var RemoveSequenceHandler = function () {
@@ -70263,7 +70261,7 @@ module.exports = {
 "use strict";
 
 
-var _CommandInterceptor2 = __webpack_require__(22);
+var _CommandInterceptor2 = __webpack_require__(17);
 
 var _CommandInterceptor3 = _interopRequireDefault(_CommandInterceptor2);
 
@@ -70482,7 +70480,7 @@ module.exports = {
 "use strict";
 
 
-var _CommandInterceptor2 = __webpack_require__(22);
+var _CommandInterceptor2 = __webpack_require__(17);
 
 var _CommandInterceptor3 = _interopRequireDefault(_CommandInterceptor2);
 
@@ -70584,7 +70582,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var p5 = __webpack_require__(17);
+var p5 = __webpack_require__(18);
 __webpack_require__(26);
 
 var MILLIS_PER_MINUTE = 60000;
@@ -71584,7 +71582,7 @@ module.exports = {
 "use strict";
 
 
-var _CommandInterceptor2 = __webpack_require__(22);
+var _CommandInterceptor2 = __webpack_require__(17);
 
 var _CommandInterceptor3 = _interopRequireDefault(_CommandInterceptor2);
 
@@ -71716,7 +71714,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var p5 = __webpack_require__(17);
+var p5 = __webpack_require__(18);
 __webpack_require__(26);
 
 var ChangeListenerPropertiesHandler = function () {
@@ -71736,7 +71734,12 @@ var ChangeListenerPropertiesHandler = function () {
 
 
       if (properties.sound) {
+
         var oldPhrase = context.oldPhrase = mainPart.getPhrase(listener.id);
+
+        if (!oldPhrase) {
+          return;
+        }
 
         var _sounds$getSound = sounds.getSound(properties.sound),
             sound = _sounds$getSound.sound;
@@ -72993,7 +72996,7 @@ module.exports = {
 "use strict";
 
 
-var _CommandInterceptor2 = __webpack_require__(22);
+var _CommandInterceptor2 = __webpack_require__(17);
 
 var _CommandInterceptor3 = _interopRequireDefault(_CommandInterceptor2);
 
@@ -73109,26 +73112,36 @@ var _classes = __webpack_require__(38);
 
 var _classes2 = _interopRequireDefault(_classes);
 
+var _CommandInterceptor2 = __webpack_require__(17);
+
+var _CommandInterceptor3 = _interopRequireDefault(_CommandInterceptor2);
+
 var _GitterUtil = __webpack_require__(5);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var SoundSelect = function () {
-  function SoundSelect(eventBus, config, commandStack) {
-    var _this = this;
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var SoundSelect = function (_CommandInterceptor) {
+  _inherits(SoundSelect, _CommandInterceptor);
+
+  function SoundSelect(eventBus, config, commandStack) {
     _classCallCheck(this, SoundSelect);
 
-    this._config = config;
-    this._commandStack = commandStack;
+    var _this = _possibleConstructorReturn(this, (SoundSelect.__proto__ || Object.getPrototypeOf(SoundSelect)).call(this, eventBus));
 
-    this.init();
+    _this._config = config;
+    _this._commandStack = commandStack;
 
-    this.createdShape = null;
+    _this.init();
 
-    eventBus.on('commandStack.shape.create.postExecuted', function (_ref) {
+    _this.createdShape = undefined;
+
+    _this.postExecuted('shape.create', function (_ref) {
       var context = _ref.context;
       var shape = context.shape;
 
@@ -73139,6 +73152,7 @@ var SoundSelect = function () {
         (0, _classes2.default)(_this.$overlay).remove('hidden');
       }
     });
+    return _this;
   }
 
   _createClass(SoundSelect, [{
@@ -73156,10 +73170,12 @@ var SoundSelect = function () {
         var $button = (0, _domify2.default)('\n        <div class="sound-select-button">' + label + '</div>\n      ');
 
         _event2.default.bind($button, 'click', function () {
-          if (_this2.createdShape === null) {
+          if (_this2.createdShape === undefined) {
             return;
           }
 
+          // TODO: fix, this is actually a seperate command, even if the overlay
+          // was showed in the post-executed phase of the previous command
           _this2._commandStack.execute('gitter.changeProperties', {
             element: _this2.createdShape,
             properties: {
@@ -73178,7 +73194,7 @@ var SoundSelect = function () {
   }]);
 
   return SoundSelect;
-}();
+}(_CommandInterceptor3.default);
 
 SoundSelect.$inject = ['eventBus', 'config', 'commandStack'];
 
