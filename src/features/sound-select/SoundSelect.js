@@ -2,18 +2,22 @@ import domify from 'min-dom/lib/domify';
 import domEvent from 'min-dom/lib/event';
 import domClasses from 'min-dom/lib/classes';
 
+import CommandInterceptor from 'diagram-js/lib/command/CommandInterceptor';
+
 import { isListener } from '../../util/GitterUtil';
 
-class SoundSelect {
+class SoundSelect extends CommandInterceptor {
   constructor(eventBus, config, commandStack) {
+    super(eventBus);
+
     this._config = config;
     this._commandStack = commandStack;
 
     this.init();
 
-    this.createdShape = null;
+    this.createdShape = undefined;
 
-    eventBus.on('commandStack.shape.create.postExecuted', ({ context }) => {
+    this.postExecuted('shape.create', ({ context }) => {
       const { shape } = context;
 
       this.createdShape = shape;
@@ -38,10 +42,12 @@ class SoundSelect {
       `);
 
       domEvent.bind($button, 'click', () => {
-        if (this.createdShape === null) {
+        if (this.createdShape === undefined) {
           return;
         }
 
+        // TODO: fix, this is actually a seperate command, even if the overlay
+        // was showed in the post-executed phase of the previous command
         this._commandStack.execute('gitter.changeProperties', {
           element: this.createdShape,
           properties: {
