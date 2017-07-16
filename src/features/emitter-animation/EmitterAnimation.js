@@ -1,12 +1,13 @@
 import svgAppend from 'tiny-svg/lib/append';
 import svgAttr from 'tiny-svg/lib/attr';
+import svgClear from 'tiny-svg/lib/clear';
 import svgCreate from 'tiny-svg/lib/create';
 import svgRemove from 'tiny-svg/lib/remove';
 
 import { isEmitter } from '../../util/GitterUtil';
 
 class EmitterAnimation {
-  constructor(eventBus, canvas, config, elementRegistry) {
+  constructor(eventBus, canvas, gitterConfig, elementRegistry) {
     const emitterAnimationLayer = canvas.getLayer('gitterEmitterAnimation', -900);
 
     this.circles = [];
@@ -41,7 +42,7 @@ class EmitterAnimation {
 
         svgAttr(circle, {
           stroke: 'none',
-          fill: config.emitterColor
+          fill: gitterConfig.emitterColor
         });
 
         svgAppend(emitterAnimationLayer, circle);
@@ -66,6 +67,13 @@ class EmitterAnimation {
 
       this.circles = this.circles.filter(c => c.emitter !== shape);
     });
+
+    // diagram clear
+    eventBus.on('diagram.clear', () => {
+      svgClear(emitterAnimationLayer);
+
+      this.circles = [];
+    });
   }
 
   updateAnimation() {
@@ -87,6 +95,6 @@ class EmitterAnimation {
   }
 }
 
-EmitterAnimation.$inject = [ 'eventBus', 'canvas', 'config', 'elementRegistry' ];
+EmitterAnimation.$inject = [ 'eventBus', 'canvas', 'gitterConfig', 'elementRegistry' ];
 
 export default EmitterAnimation;

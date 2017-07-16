@@ -2,32 +2,33 @@ import Diagram from 'diagram-js';
 
 // gitter modules
 import autoConnect from './features/auto-connect';
-import config from './config';
+import gitterConfig from './config';
 import coreModule from './core';
 import cropping from './features/cropping';
-import downloadMidi from './features/download-midi';
 import emissionAnimation from './features/emission-animation';
 import emitterAnimation from './features/emitter-animation';
 import gitterContextPad from './features/context-pad';
 import gitterEmitterPreview from './features/emitter-preview';
 import gitterMovePreview from './features/move-preview';
 import gitterPalette from './features/palette';
-import helpOverlay from './features/help-overlay';
+import gitterRules from './features/rules';
 import keyboardBindings from './features/keyboard-bindings';
 import listenerAnimation from './features/listener-animation';
 import modeling from './features/modeling';
 import notifications from './features/notifications';
 import ordering from './features/ordering';
 import propertiesPanel from './features/properties-panel';
-import gitterRules from './features/rules';
+import saveMidi from './features/save-midi';
 import sequences from './features/sequences';
 import soundSelect from './features/sound-select';
 
+import { isRoot, isEmitter, isListener } from './util/GitterUtil';
+
 class Gitter extends Diagram {
-  constructor(options) {
+  constructor(options = {}) {
     const diagramModules = [
       {
-        config: [ 'value', config ],
+        gitterConfig: [ 'value', gitterConfig ],
         connectionDocking: [ 'type', require('diagram-js/lib/layout/CroppingConnectionDocking') ]
       },
       require('diagram-js/lib/features/selection'),
@@ -51,7 +52,7 @@ class Gitter extends Diagram {
       require('diagram-js/lib/features/keyboard'),
       
       {
-        movePreview: [ 'value', 'foo' ]
+        movePreview: [ 'value', {} ]
       }
     ];
 
@@ -59,7 +60,6 @@ class Gitter extends Diagram {
       autoConnect,
       coreModule,
       cropping,
-      downloadMidi,
       emissionAnimation,
       emitterAnimation,
       gitterContextPad,
@@ -67,23 +67,151 @@ class Gitter extends Diagram {
       gitterMovePreview,
       gitterPalette,
       gitterRules,
-      helpOverlay,
       keyboardBindings,
       listenerAnimation,
       modeling,
       notifications,
       ordering,
       propertiesPanel,
+      saveMidi,
       sequences,
       soundSelect
     ];
 
-    super({
+    const additionalModules = options.additionalModules || [];
+
+    super(Object.assign(options, {
       modules: [
         ...diagramModules,
-        ...gitterModules
+        ...gitterModules,
+        ...additionalModules
       ]
+    }));
+  }
+
+  load(descriptors) {
+    const gitterConfig = this.get('gitterConfig'),
+          canvas = this.get('canvas'),
+          modeling = this.get('modeling'),
+          gitterElementFactory = this.get('gitterElementFactory'),
+          notifications = this.get('notifications'),
+          eventBus = this.get('eventBus');
+
+    eventBus.fire('gitter.load.start');
+
+    const { shapeSize } = gitterConfig;
+
+    let elements;
+
+    try {
+      elements = JSON.parse(descriptors).elements;
+    } catch(e) {
+      if (notifications) {
+        notifications.showNotification('Could not load');
+      }
+    }
+
+    console.log(elements);
+
+    this.clear();
+
+    // add root first
+    const rootElement = elements.filter(({ isRoot }) => isRoot)[0];
+
+    if (!rootElement) {
+      throw new Error('root not found');
+    }
+
+    const { tempo } = rootElement;
+
+    const rootShape = gitterElementFactory.createRoot({
+      tempo
     });
+
+    canvas.setRootElement(rootShape);
+
+    elements.forEach(element => {
+      
+      if (element.isRoot) {
+        return;
+      } else if (isEmitter(element)) {
+        const { type, x, y, timeSignature } = element;
+
+        const emitterShape = gitterElementFactory.createEmitter({
+          type,
+          timeSignature,
+          width: shapeSize,
+          height: shapeSize
+        });
+
+        modeling.createShape(emitterShape, { x, y }, rootShape);
+      } else if (isListener(element)) {
+        const { type, x, y, sound } = element;
+
+        const listenerShape = gitterElementFactory.createEmitter({
+          type,
+          sound,
+          width: shapeSize,
+          height: shapeSize
+        });
+
+        modeling.createShape(listenerShape, { x, y }, rootShape);
+      }
+
+    });
+
+    eventBus.fire('gitter.load.end');
+  }
+
+  save() {
+    const elementRegistry = this.get('elementRegistry');
+
+    let elements = [];
+
+    Object.values(elementRegistry._elements).forEach(({ element }) => {
+
+      let descriptor;
+
+      if (isRoot(element)) {
+        descriptor = {
+          isRoot: true,
+          tempo: element.tempo
+        };
+      } else if (isEmitter(element)) {
+        descriptor = {
+          type: element.type,
+          timeSignature: element.timeSignature,
+          x: element.x,
+          y: element.y
+        };
+      } else if (isListener(element)) {
+        descriptor = {
+          type: element.type,
+          sound: element.sound,
+          x: element.x,
+          y: element.y
+        };
+      }
+
+      if (descriptor) {
+        elements = [
+          ...elements,
+          descriptor
+        ];
+      }
+    });
+
+    return JSON.stringify({ elements });
+  }
+
+  saveMidi() {
+    const saveMidi = this.get('saveMidi');
+
+    if (!saveMidi) {
+      throw new Error('feature not found');
+    }
+
+    saveMidi.saveMidi();
   }
 }
 

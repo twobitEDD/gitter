@@ -5,10 +5,10 @@ import { getSequence } from '../../util/SequenceUtil';
 import { getDistance } from '../../util/GeometryUtil';
 
 class Sequences extends CommandInterceptor {
-  constructor(audio, config, eventBus) {
+  constructor(audio, gitterConfig, eventBus) {
     super(eventBus);
 
-    const { maxDistance, offsetDistance } = config;
+    const { maxDistance, offsetDistance } = gitterConfig;
 
     // connection create
     this.postExecute('connection.create', event => {
@@ -41,11 +41,9 @@ class Sequences extends CommandInterceptor {
 
       audio.removeSequence(source, target);
     });
-
-    // properties update
   }
 }
 
-Sequences.$inject = [ 'audio', 'config', 'eventBus' ];
+Sequences.$inject = [ 'audio', 'gitterConfig', 'eventBus' ];
 
 module.exports = Sequences;

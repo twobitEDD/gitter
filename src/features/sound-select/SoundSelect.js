@@ -7,17 +7,32 @@ import CommandInterceptor from 'diagram-js/lib/command/CommandInterceptor';
 import { isListener } from '../../util/GitterUtil';
 
 class SoundSelect extends CommandInterceptor {
-  constructor(eventBus, config, commandStack) {
+  constructor(eventBus, canvas, gitterConfig, commandStack) {
     super(eventBus);
 
-    this._config = config;
+    this._canvas = canvas;
+    this._gitterConfig = gitterConfig;
     this._commandStack = commandStack;
 
     this.init();
 
+    let isLoading = false;
+
+    eventBus.on('gitter.load.start', () => {
+      isLoading = true;
+    });
+
+    eventBus.on('gitter.load.end', () => {
+      isLoading = false;
+    });
+
     this.createdShape = undefined;
 
     this.postExecuted('shape.create', ({ context }) => {
+      if (isLoading) {
+        return;
+      }
+
       const { shape } = context;
 
       this.createdShape = shape;
@@ -35,7 +50,7 @@ class SoundSelect extends CommandInterceptor {
       </div>
     `);
 
-    this._config.sounds.forEach(({ id, label }) => {
+    this._gitterConfig.sounds.forEach(({ id, label }) => {
 
       const $button = domify(`
         <div class="sound-select-button">${label}</div>
@@ -61,10 +76,10 @@ class SoundSelect extends CommandInterceptor {
       this.$overlay.appendChild($button);
     });
 
-    document.body.appendChild(this.$overlay);
+    this._canvas.getContainer().appendChild(this.$overlay);
   }
 }
 
-SoundSelect.$inject = [ 'eventBus', 'config', 'commandStack' ];
+SoundSelect.$inject = [ 'eventBus', 'canvas', 'gitterConfig', 'commandStack' ];
 
 export default SoundSelect;

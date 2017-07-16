@@ -1,7 +1,7 @@
 import BaseElementFactory from 'diagram-js/lib/core/ElementFactory';
 
 class GitterElementFactory extends BaseElementFactory {
-  constructor(config, sounds) {
+  constructor(gitterConfig, sounds) {
     super();
 
     this.baseCreate = BaseElementFactory.prototype.create;
@@ -12,7 +12,7 @@ class GitterElementFactory extends BaseElementFactory {
       root: attrs => {
         return this.baseCreate('root', Object.assign({
           id: 'root',
-          tempo: config.initialTempo
+          tempo: gitterConfig.initialTempo
         }, attrs));
       },
 
@@ -20,9 +20,9 @@ class GitterElementFactory extends BaseElementFactory {
       emitter: attrs => {
         return this.baseCreate('shape', Object.assign({
           type: 'gitter:Emitter',
-          width: config.shapeSize,
-          height: config.shapeSize,
-          timeSignature: config.initialTimeSignature
+          width: gitterConfig.shapeSize,
+          height: gitterConfig.shapeSize,
+          timeSignature: gitterConfig.initialTimeSignature
         }, attrs));
       },
 
@@ -30,9 +30,9 @@ class GitterElementFactory extends BaseElementFactory {
       listener: attrs => {
         return this.baseCreate('shape', Object.assign({
           type: 'gitter:Listener',
-          width: config.shapeSize,
-          height: config.shapeSize,
-          sound: config.initialSound
+          width: gitterConfig.shapeSize,
+          height: gitterConfig.shapeSize,
+          sound: gitterConfig.initialSound
         }, attrs));
       }
     }
@@ -55,6 +55,6 @@ class GitterElementFactory extends BaseElementFactory {
   }
 }
 
-GitterElementFactory.$inject = [ 'config', 'sounds' ];
+GitterElementFactory.$inject = [ 'gitterConfig', 'sounds' ];
 
 module.exports = GitterElementFactory;

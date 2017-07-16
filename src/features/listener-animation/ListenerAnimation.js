@@ -1,10 +1,11 @@
 import svgAppend from 'tiny-svg/lib/append';
 import svgAttr from 'tiny-svg/lib/attr';
+import svgClear from 'tiny-svg/lib/clear';
 import svgCreate from 'tiny-svg/lib/create';
 import svgRemove from 'tiny-svg/lib/remove';
 
 class ListenerAnimation {
-  constructor(eventBus, canvas, config) {
+  constructor(eventBus, canvas, gitterConfig) {
     const listenerAnimationLayer = canvas.getLayer('gitterListenerAnimation', -800);
 
     this.circles = [];
@@ -26,7 +27,7 @@ class ListenerAnimation {
 
       svgAttr(circle, {
         stroke: 'none',
-        fill: config.emitterColor
+        fill: gitterConfig.emitterColor
       });
 
       svgAppend(listenerAnimationLayer, circle);
@@ -50,6 +51,13 @@ class ListenerAnimation {
 
       this.circles = this.circles.filter(c => c.listener !== shape);
     });
+
+    // diagram clear
+    eventBus.on('diagram.clear', () => {
+      svgClear(listenerAnimationLayer);
+
+      this.circles = [];
+    });
   }
 
   updateAnimation() {
@@ -71,6 +79,6 @@ class ListenerAnimation {
   }
 }
 
-ListenerAnimation.$inject = [ 'eventBus', 'canvas', 'config' ];
+ListenerAnimation.$inject = [ 'eventBus', 'canvas', 'gitterConfig' ];
 
 export default ListenerAnimation;

@@ -9,10 +9,10 @@ import svgCreate from 'tiny-svg/lib/create';
 import { isEmitter, isListener, isConnection } from '../util/GitterUtil';
 
 class CustomRenderer extends BaseRenderer {
-  constructor(eventBus, canvas, config) {
+  constructor(eventBus, canvas, gitterConfig) {
     super(eventBus, 2000);
 
-    this._config = config;
+    this._gitterConfig = gitterConfig;
 
     this.drawEmitter = (p, width, height, color) => {
       const cx = width / 2,
@@ -96,7 +96,7 @@ class CustomRenderer extends BaseRenderer {
     this.drawConnection = (p, element) => {
       const attrs = {
         strokeWidth: 1,
-        stroke: config.emitterColor
+        stroke: gitterConfig.emitterColor
       };
 
       return svgAppend(p, createLine(element.waypoints, attrs));
@@ -127,9 +127,9 @@ class CustomRenderer extends BaseRenderer {
 
   drawShape(parent, element) {
     if (isEmitter(element)) {
-      return this.drawEmitter(parent, element.width, element.height, this._config.emitterColor);
+      return this.drawEmitter(parent, element.width, element.height, this._gitterConfig.emitterColor);
     } else if (isListener(element)) {
-      return this.drawListener(parent, element.width, element.height, this._config.emitterColor, this._config.listenerColor);
+      return this.drawListener(parent, element.width, element.height, this._gitterConfig.emitterColor, this._gitterConfig.listenerColor);
     }
   }
 
@@ -146,6 +146,6 @@ class CustomRenderer extends BaseRenderer {
   }
 }
 
-CustomRenderer.$inject = [ 'eventBus', 'canvas', 'config' ];
+CustomRenderer.$inject = [ 'eventBus', 'canvas', 'gitterConfig' ];
 
 module.exports = CustomRenderer;

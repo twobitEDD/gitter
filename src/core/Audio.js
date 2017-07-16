@@ -35,7 +35,7 @@ class Audio extends CommandInterceptor {
 
     this.mainPart.addPhrase(phrase);
 
-    window.phrases = this.mainPart.phrases;
+    window.phrases = this.phrases;
 
     const reverb = new p5.Reverb();
     const delay = new p5.Delay();
@@ -53,6 +53,15 @@ class Audio extends CommandInterceptor {
         reverb.process(sound, 1, 2); // reverb time, decay rate
         delay.process(sound, .12, .1, 2300); // delay time, feedback, filter frequency
       });
+    });
+
+    // diagram clear
+    eventBus.on('diagram.clear', () => {
+      Object.keys(this.phrases).forEach(key => {
+        this.mainPart.removePhrase(key);
+      });
+      
+      this.phrases = {};
     });
 
     // enable changing tempo during input

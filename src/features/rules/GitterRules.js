@@ -8,10 +8,10 @@ import { getDistance } from '../../util/GeometryUtil';
 const HIGH_PRIORITY = 1500;
 
 class GitterRules extends RuleProvider {
-  constructor(eventBus, config) {
+  constructor(eventBus, gitterConfig) {
     super(eventBus);
 
-    this._config = config;
+    this._gitterConfig = gitterConfig;
 
     const canCreate = target => {
       if (!target) {
@@ -55,10 +55,10 @@ class GitterRules extends RuleProvider {
 
   canConnect(source, target) {
     return source.type !== target.type &&
-      getDistance(source, target) < this._config.maxDistance;
+      getDistance(source, target) < this._gitterConfig.maxDistance;
   }
 }
 
-GitterRules.$inject = [ 'eventBus', 'config' ];
+GitterRules.$inject = [ 'eventBus', 'gitterConfig' ];
 
 module.exports = GitterRules;

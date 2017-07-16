@@ -2,16 +2,16 @@ const p5 = require('p5');
 require('p5/lib/addons/p5.sound.js');
 
 class Sounds {
-  constructor(eventBus, config, loadingOverlay) {
+  constructor(eventBus, gitterConfig, loadingOverlay) {
     this._eventBus = eventBus;
-    this._config = config;
+    this._gitterConfig = gitterConfig;
     this._loadingOverlay = loadingOverlay;
 
     this._sounds = {
       none: {
         sound: {
-          rate() { console.log('rate'); },
-          play() { console.log('play'); }
+          rate() {},
+          play() {}
         },
         label: 'None'
       }
@@ -27,7 +27,7 @@ class Sounds {
 
     let numberLoading = 0;
 
-    this._config.sounds.forEach(s => {
+    this._gitterConfig.sounds.forEach(s => {
       numberLoading++;
 
       const sound = p5.prototype.loadSound(s.path, () => {
@@ -62,6 +62,6 @@ class Sounds {
   }
 }
 
-Sounds.$inject = [ 'eventBus', 'config', 'loadingOverlay' ];
+Sounds.$inject = [ 'eventBus', 'gitterConfig', 'loadingOverlay' ];
 
 module.exports = Sounds;

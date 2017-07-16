@@ -1,16 +1,20 @@
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const path = require('path');
 
 const PROD = process.argv.indexOf('-p') !== -1;
 
 module.exports = {
+  node: {
+    fs: 'empty'
+  },
   entry: PROD
     ? [
       'webpack-dev-server/client?http://localhost:8000',
       // 'webpack/hot/only-dev-server',
-      './src/index.js',
+      './dist/app.js',
     ]
     : [
-      './src/index.js',
+      './dist/app.js'
     ],
   module: {
     rules: [
@@ -33,5 +37,12 @@ module.exports = {
     contentBase: './dist',
     // hot: true,
     historyApiFallback: true,
-  }
+  },
+  plugins: [
+    new CopyWebpackPlugin([
+      { from: 'assets/css', to: 'css' },
+      { from: 'assets/bpmn-font', to: 'bpmn-font' },
+      { from: 'assets/audio', to: 'audio' }
+    ])
+  ]
 };

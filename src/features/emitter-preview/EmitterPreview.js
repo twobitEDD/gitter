@@ -36,8 +36,8 @@ function createEmitterPreview(cx, cy, timeSignature, maxDistance, offsetDistance
 }
 
 class EmitterPreview {
-  constructor(eventBus, canvas, elementRegistry, config) {
-    const { maxDistance, offsetDistance } = config;
+  constructor(eventBus, canvas, elementRegistry, gitterConfig) {
+    const { maxDistance, offsetDistance } = gitterConfig;
 
     const emitterPreviewLayer = canvas.getLayer('gitterEmitterPreview', -1000);
 
@@ -165,6 +165,6 @@ class EmitterPreview {
   }
 }
 
-EmitterPreview.$inject = [ 'eventBus', 'canvas', 'elementRegistry', 'config' ];
+EmitterPreview.$inject = [ 'eventBus', 'canvas', 'elementRegistry', 'gitterConfig' ];
 
 module.exports = EmitterPreview;

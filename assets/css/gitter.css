@@ -1,3 +1,7 @@
+.djs-container {
+  background-color: #000;
+}
+
 .djs-connection .djs-hit {
     pointer-events: none;
 }
@@ -111,7 +115,6 @@ svg.new-parent {
 .djs-palette .entry {
   color: #999;
   font-size: 30px;
-
   text-align: center;
 }
 
@@ -347,18 +350,5 @@ svg.new-parent {
 #sound-select-overlay .sound-select-button:hover {
   cursor: default;
   background-color: #fff;
-  color: #000;
-}
-
-/** midi download icon */
-#download-icon {
-  position: absolute;
-  bottom: 35px;
-  right: 10px;
-  z-index: 10000;
-  color: #fff;
-}
-
-#download-icon.inverted {
   color: #000;
 }

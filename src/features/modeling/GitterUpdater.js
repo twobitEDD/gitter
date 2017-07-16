@@ -26,10 +26,10 @@ function connected(source, target) {
 }
 
 class GitterUpdater extends CommandInterceptor {
-  constructor(eventBus, commandStack, audio, sounds, elementRegistry, config) {
+  constructor(eventBus, commandStack, audio, sounds, elementRegistry, gitterConfig) {
     super(eventBus);
 
-    const { maxDistance, offsetDistance } = config;
+    const { maxDistance, offsetDistance } = gitterConfig;
 
     commandStack.registerHandler('gitter.changeRootProperties', ChangeRootPropertiesHandler);
     commandStack.registerHandler('gitter.changeListenerProperties', ChangeListenerPropertiesHandler);
@@ -88,7 +88,7 @@ GitterUpdater.$inject = [
   'audio',
   'sounds',
   'elementRegistry',
-  'config'
+  'gitterConfig'
 ];
 
 module.exports = GitterUpdater;

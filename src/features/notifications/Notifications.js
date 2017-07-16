@@ -20,11 +20,11 @@ const IGNORED_COMMANDS = [
 ];
 
 class Notifications {
-  constructor(eventBus, canvas, propertiesPanel, config, commandStack) {
+  constructor(eventBus, canvas, propertiesPanel, gitterConfig, commandStack) {
     this._eventBus = eventBus;
     this._canvas = canvas;
     this._propertiesPanel = propertiesPanel;
-    this._config = config;
+    this._gitterConfig = gitterConfig;
     this._commandStack = commandStack;
 
     this.timesExecuted = 0;
@@ -66,8 +66,8 @@ class Notifications {
 
     const propertiesPanelOpen = this._propertiesPanel.isOpen();
 
-    const rightOpen = 10 + this._config.propertiesPanelWidth;
-    const rightClosed = 10 + this._config.propertiesPanelWidthClosed;
+    const rightOpen = 10 + this._gitterConfig.propertiesPanelWidth;
+    const rightClosed = 10 + this._gitterConfig.propertiesPanelWidthClosed;
 
     this.$parent.style.right = '' + (propertiesPanelOpen ? rightOpen : rightClosed) + 'px';
 
@@ -97,10 +97,10 @@ class Notifications {
 
     setTimeout(() => {
       $notification.remove();
-    }, this._config.notificationTimeToLive);
+    }, this._gitterConfig.notificationTimeToLive);
   }
 }
 
-Notifications.$inject = [ 'eventBus', 'canvas', 'propertiesPanel', 'config', 'commandStack' ];
+Notifications.$inject = [ 'eventBus', 'canvas', 'propertiesPanel', 'gitterConfig', 'commandStack' ];
 
 module.exports = Notifications;

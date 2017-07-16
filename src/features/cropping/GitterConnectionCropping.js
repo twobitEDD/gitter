@@ -3,8 +3,8 @@ import { getMid, getVectorFromPoints, Vector } from '../../util/GeometryUtil';
 const { atan2, cos, sin, PI } = Math;
 
 class GitterConnectionCropping {
-  constructor(config) {
-    this.shapeRadius = config.shapeSize / 2;
+  constructor(gitterConfig) {
+    this.shapeRadius = gitterConfig.shapeSize / 2;
   }
 
   getCroppedWaypoints(a, b) {
@@ -35,6 +35,6 @@ class GitterConnectionCropping {
   }
 }
 
-GitterConnectionCropping.$inject = [ 'config' ];
+GitterConnectionCropping.$inject = [ 'gitterConfig' ];
 
 export default GitterConnectionCropping;

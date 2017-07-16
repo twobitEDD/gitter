@@ -10,10 +10,10 @@ import EntryFactory from './EntryFactory';
 import { isEmitter, isListener } from '../../util/GitterUtil';
 
 class PropertiesPanel {
-  constructor(eventBus, canvas, config, commandStack, sounds) {
+  constructor(eventBus, canvas, gitterConfig, commandStack, sounds) {
     this._eventBus = eventBus;
     this._canvas = canvas;
-    this._config = config;
+    this._gitterConfig = gitterConfig;
     this._commandStack = commandStack;
     this._sounds = sounds;
 
@@ -89,7 +89,7 @@ class PropertiesPanel {
     `);
 
     Object.assign(this.$propertiesPanel.style, {
-      width: this._config.propertiesPanelWidth + 'px'
+      width: this._gitterConfig.propertiesPanelWidth + 'px'
     });
 
     this.$closeIcon = domQuery('.close', this.$propertiesPanel);
@@ -154,7 +154,7 @@ class PropertiesPanel {
 
       const options = [];
 
-      const timeSignatures = this._config.timeSignatures;
+      const timeSignatures = this._gitterConfig.timeSignatures;
 
       const selectedOption = element.timeSignature;
 
@@ -262,12 +262,12 @@ class PropertiesPanel {
     }
   }
 
-  updateEntries(config) {
+  updateEntries(gitterConfig) {
     while (this.$properties.firstChild) {
       this.$properties.removeChild(this.$properties.firstChild);
     }
 
-    config.forEach(entryConfig => {
+    gitterConfig.forEach(entryConfig => {
       const entry = this.entryFactory.createEntry(entryConfig);
 
       this.$properties.appendChild(entry);
@@ -282,6 +282,6 @@ class PropertiesPanel {
   }
 }
 
-PropertiesPanel.$inject = [ 'eventBus', 'canvas', 'config', 'commandStack', 'sounds' ];
+PropertiesPanel.$inject = [ 'eventBus', 'canvas', 'gitterConfig', 'commandStack', 'sounds' ];
 
 module.exports = PropertiesPanel;

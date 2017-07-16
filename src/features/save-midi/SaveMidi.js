@@ -19,29 +19,9 @@ function getNoteFromIndex(index) {
   return NOTES[noteIndex] + octaveIndex;
 }
 
-class DownloadMidi {
+class SaveMidi {
   constructor(eventBus, canvas, audio) {
     this._audio = audio;
-
-    const $downloadIcon = domify(`
-      <div id="download-icon">
-        <i class="fa fa-download"></i>
-      </div>
-    `);
-
-    document.body.appendChild($downloadIcon);
-
-    eventBus.on('propertiespanel.select', ({ element }) => {
-      if (isRoot(element)) {
-        domClasses($downloadIcon).add('inverted');
-      } else {
-        domClasses($downloadIcon).remove('inverted');
-      }
-    });
-
-    domEvent.bind($downloadIcon, 'click', () => {
-      this.saveMidi();
-    });
   }
 
   saveMidi() {
@@ -85,6 +65,6 @@ class DownloadMidi {
   }
 }
 
-DownloadMidi.$inject = [ 'eventBus', 'canvas', 'audio' ];
+SaveMidi.$inject = [ 'eventBus', 'canvas', 'audio' ];
 
-export default DownloadMidi;
+export default SaveMidi;

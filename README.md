@@ -4,6 +4,4 @@
 
 ## Gitter - a node-based sequencer for the web
 
-> This project is in early development stage.
-
-![Screenshot](docs/screencast-new.gif)
+__[Demo](https://philippfromme.github.io/gitter-demo/)__

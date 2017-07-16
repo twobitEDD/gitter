@@ -25,9 +25,9 @@ const IMPULSE_RECT_HEIGHT = 4;
 const round = Math.round;
 
 class EmissionAnimation {
-  constructor(eventBus, canvas, config, elementRegistry) {
+  constructor(eventBus, canvas, gitterConfig, elementRegistry) {
     this._canvas = canvas;
-    this._config = config;
+    this._gitterConfig = gitterConfig;
 
     this.audioContext = p5.prototype.getAudioContext();
 
@@ -84,6 +84,13 @@ class EmissionAnimation {
         this.impulses.filter(i => i.emitter.id !== source.id || i.listener.id !== target.id);
     });
 
+    // diagram clear
+    eventBus.on('diagram.clear', () => {
+      svgClear(this.emissionAnimationLayer);
+
+      this.impulses = [];
+    });
+
     // start animation loop
     this.updateAnimation();
   }
@@ -91,7 +98,7 @@ class EmissionAnimation {
   createEmitterAnimation({ source, target }) {
     const { tempo } = this._canvas.getRootElement();
 
-    const { maxDistance, offsetDistance } = this._config;
+    const { maxDistance, offsetDistance } = this._gitterConfig;
 
     const quarterNoteDuration = MILLIS_PER_MINUTE / tempo,
           sixteenthNoteDuration = quarterNoteDuration / 4;
@@ -127,7 +134,7 @@ class EmissionAnimation {
       y: - round(IMPULSE_RECT_HEIGHT / 2),
       width: IMPULSE_RECT_WIDTH,
       height: IMPULSE_RECT_HEIGHT,
-      fill: this._config.emitterColor
+      fill: this._gitterConfig.emitterColor
     });
 
     const rotation =
@@ -202,6 +209,6 @@ class EmissionAnimation {
   }
 }
 
-EmissionAnimation.$inject = [ 'eventBus', 'canvas', 'config', 'elementRegistry' ];
+EmissionAnimation.$inject = [ 'eventBus', 'canvas', 'gitterConfig', 'elementRegistry' ];
 
 export default EmissionAnimation;
