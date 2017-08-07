@@ -1,13 +1,20 @@
+import clapSvg from '../assets/icons/clap.svg';
+import closedhatSvg from '../assets/icons/closedhat.svg';
+import kickSvg from '../assets/icons/kick.svg';
+import openhatSvg from '../assets/icons/openhat.svg';
+import removeSvg from '../assets/icons/remove.svg';
+import snareSvg from '../assets/icons/snare.svg';
+import tomSvg from '../assets/icons/tom.svg';
+
 export default {
   maxDistance: 400, // px
   offsetDistance: 20, // px
   emitterColor: '#34D1BF',
   listenerColor: '#D1345B',
   shapeSize: 20, // px
-  propertiesPanelWidth: 220, // px
-  propertiesPanelWidthClosed: 34, // px
+  minTempo: 70, // bpm
+  maxTempo: 140, // bpmn
   initialTempo: 120, // bpm
-  notificationTimeToLive: 3000, // ms
   initialTimeSignature: '8',
   timeSignatures: [
     { id: '2', label: '1/2' },
@@ -17,15 +24,20 @@ export default {
   ],
   initialSound: undefined,
   sounds: [
-    { id: 'kick-1', label: 'Kick 1', path: './audio/kick-1.wav' },
-    { id: 'kick-2', label: 'Kick 2', path: './audio/kick-2.wav' },
-    { id: 'clap-1', label: 'Clap 1', path: './audio/clap-1.wav' },
-    { id: 'clap-2', label: 'Clap 2', path: './audio/clap-2.wav' },
+    { id: 'kick', label: 'Kick', path: './audio/kick-2.wav' },
+    { id: 'clap', label: 'Clap', path: './audio/clap-2.wav' },
     { id: 'snare', label: 'Snare', path: './audio/snare.wav' },
-    { id: 'closedhat-1', label: 'Closed Hihat 1', path: './audio/closedhat-1.wav' },
-    { id: 'closedhat-2', label: 'Closed Hihat 2', path: './audio/closedhat-2.wav' },
-    { id: 'openhat-1', label: 'Open Hihat', path: './audio/openhat-1.wav' },
-    { id: 'tom-1', label: 'Tom 1', path: './audio/tom-1.wav' },
-    { id: 'tom-2', label: 'Tom 2', path: './audio/tom-2.wav' }
-    ]
+    { id: 'closedhat', label: 'Closed Hihat', path: './audio/closedhat-2.wav' },
+    { id: 'openhat', label: 'Open Hihat', path: './audio/openhat-1.wav' },
+    { id: 'tom', label: 'Tom', path: './audio/tom-1.wav' }
+  ],
+  icons: {
+    clap: clapSvg,
+    closedhat: closedhatSvg,
+    kick: kickSvg,
+    openhat: openhatSvg,
+    remove: removeSvg,
+    snare: snareSvg,
+    tom: tomSvg
+  }
 };

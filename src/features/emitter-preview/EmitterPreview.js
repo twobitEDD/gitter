@@ -5,7 +5,7 @@ import svgClear from 'tiny-svg/lib/clear';
 
 var translate = require('diagram-js/lib/util/SvgTransformUtil').translate;
 
-import { isEmitter, isListener } from '../../util/GitterUtil';
+import { isEmitter, isListener, isRoot } from '../../util/GitterUtil';
 
 function createEmitterPreview(cx, cy, timeSignature, maxDistance, offsetDistance) {
   const attrs = {
@@ -75,9 +75,11 @@ class EmitterPreview {
       'commandStack.shape.move.executed',
       'commandStack.shape.move.reverted'
     ], ({ context }) => {
-      svgClear(emitterPreviewLayer);
-
       const element = context.element || context.shape;
+
+      if (isRoot(element)) return;
+
+      svgClear(emitterPreviewLayer);
 
       if (isEmitter(element)) {
         const emitter = element;

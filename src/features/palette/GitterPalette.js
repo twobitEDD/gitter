@@ -14,7 +14,6 @@ class GitterPalette {
           gitterElementFactory = this._gitterElementFactory,
           lassoTool = this._lassoTool;
 
-
     const createAction = (type, group, className, title, options) => {
 
       const createShape = event => {

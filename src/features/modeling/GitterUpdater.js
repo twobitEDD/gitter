@@ -40,6 +40,10 @@ class GitterUpdater extends CommandInterceptor {
       const { element, oldProperties, properties } = context;
 
       if (isRoot(element)) {
+
+        // updates BPM on p5.sound part after BPM change
+
+        // TODO: rename handler to avoid confusion
         commandStack.execute('gitter.changeRootProperties', {
           mainPart,
           oldProperties,
@@ -63,6 +67,8 @@ class GitterUpdater extends CommandInterceptor {
           });
         }
       } else if (isListener(element)) {
+
+        // update p5.sound sound after sound change
         const onPlay = () => {
           eventBus.fire('gitter.audio.playSound', {
             listener: element

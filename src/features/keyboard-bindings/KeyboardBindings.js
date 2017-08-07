@@ -53,6 +53,14 @@ class KeyboardBindings {
         return true;
       }
 
+      // 27 -> clear selection
+      if (key === 27) {
+
+        if (this._selection.get().length) {
+          this._selection.select(null);
+        }
+      }
+
      });
   }
 

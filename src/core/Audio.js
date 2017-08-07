@@ -65,7 +65,7 @@ class Audio extends CommandInterceptor {
     });
 
     // enable changing tempo during input
-    eventBus.on('gitter.propertiesPanel.tempoInput', ({ tempo }) => {
+    eventBus.on('gitter.tempoControl.input', ({ tempo }) => {
       this.mainPart.setBPM(tempo);
     });
   }

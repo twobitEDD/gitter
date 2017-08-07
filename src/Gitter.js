@@ -7,20 +7,19 @@ import coreModule from './core';
 import cropping from './features/cropping';
 import emissionAnimation from './features/emission-animation';
 import emitterAnimation from './features/emitter-animation';
-import gitterContextPad from './features/context-pad';
 import gitterEmitterPreview from './features/emitter-preview';
 import gitterMovePreview from './features/move-preview';
 import gitterPalette from './features/palette';
 import gitterRules from './features/rules';
 import keyboardBindings from './features/keyboard-bindings';
 import listenerAnimation from './features/listener-animation';
-import modeling from './features/modeling';
-import notifications from './features/notifications';
+import gitterModeling from './features/modeling';
 import ordering from './features/ordering';
-import propertiesPanel from './features/properties-panel';
+import overridden from './features/overridden'; // overridden diagram-js features
+import radialMenu from './features/radial-menu';
 import saveMidi from './features/save-midi';
 import sequences from './features/sequences';
-import soundSelect from './features/sound-select';
+import tempoControl from './features/tempo-control';
 
 import { isRoot, isEmitter, isListener } from './util/GitterUtil';
 
@@ -31,26 +30,25 @@ class Gitter extends Diagram {
         gitterConfig: [ 'value', gitterConfig ],
         connectionDocking: [ 'type', require('diagram-js/lib/layout/CroppingConnectionDocking') ]
       },
-      require('diagram-js/lib/features/selection'),
-      require('diagram-js/lib/features/overlays'),
-      require('diagram-js/lib/navigation/zoomscroll'),
-      require('diagram-js/lib/navigation/movecanvas'),
       require('diagram-js/lib/features/auto-scroll'),
-      require('diagram-js/lib/features/rules'),
+      require('diagram-js/lib/features/connect'),
+      require('diagram-js/lib/features/context-pad'),
+      require('diagram-js/lib/features/create'),
+      require('diagram-js/lib/features/editor-actions'),
+      require('diagram-js/lib/features/hand-tool'),
+      require('diagram-js/lib/features/keyboard'),
+      require('diagram-js/lib/features/lasso-tool'),
       require('diagram-js/lib/features/modeling'),
       require('diagram-js/lib/features/move'),
       require('diagram-js/lib/features/outline'),
-      require('diagram-js/lib/features/tool-manager'),
-      require('diagram-js/lib/features/lasso-tool'),
-      require('diagram-js/lib/features/hand-tool'),
+      require('diagram-js/lib/features/overlays'),
       require('diagram-js/lib/features/palette'),
-      require('diagram-js/lib/features/create'),
-      require('diagram-js/lib/features/context-pad'),
-      require('diagram-js/lib/features/connect'),
       require('diagram-js/lib/features/popup-menu'),
-      require('diagram-js/lib/features/editor-actions'),
-      require('diagram-js/lib/features/keyboard'),
-      
+      require('diagram-js/lib/features/rules'),
+      require('diagram-js/lib/features/selection'),
+      require('diagram-js/lib/features/tool-manager'),
+      require('diagram-js/lib/navigation/movecanvas'),
+      require('diagram-js/lib/navigation/zoomscroll'),
       {
         movePreview: [ 'value', {} ]
       }
@@ -62,20 +60,19 @@ class Gitter extends Diagram {
       cropping,
       emissionAnimation,
       emitterAnimation,
-      gitterContextPad,
       gitterEmitterPreview,
       gitterMovePreview,
       gitterPalette,
       gitterRules,
       keyboardBindings,
       listenerAnimation,
-      modeling,
-      notifications,
+      gitterModeling,
       ordering,
-      propertiesPanel,
+      overridden,
+      radialMenu,
       saveMidi,
       sequences,
-      soundSelect
+      tempoControl
     ];
 
     const additionalModules = options.additionalModules || [];
@@ -89,12 +86,40 @@ class Gitter extends Diagram {
     }));
   }
 
+  create() {
+    const canvas = this.get('canvas');
+    const eventBus = this.get('eventBus');
+    const gitterConfig = this.get('gitterConfig');
+    const gitterElementFactory = this.get('gitterElementFactory');
+
+    eventBus.fire('gitter.create.start');
+
+    const rootShape = gitterElementFactory.createRoot();
+    
+    canvas.setRootElement(rootShape);
+    
+    const x = Math.floor(canvas.getContainer().clientWidth / 3) - 15;
+    const y = Math.floor(canvas.getContainer().clientHeight / 2) - 15;
+    
+    const emitter = gitterElementFactory.createEmitter({
+      id: 'Emitter_1',
+      type: 'gitter:Emitter',
+      x,
+      y,
+      width: gitterConfig.shapeSize,
+      height: gitterConfig.shapeSize
+    });
+    
+    canvas.addShape(emitter, rootShape);
+
+    eventBus.fire('gitter.create.end');
+  }
+
   load(descriptors) {
     const gitterConfig = this.get('gitterConfig'),
           canvas = this.get('canvas'),
           modeling = this.get('modeling'),
           gitterElementFactory = this.get('gitterElementFactory'),
-          notifications = this.get('notifications'),
           eventBus = this.get('eventBus');
 
     eventBus.fire('gitter.load.start');
@@ -106,9 +131,7 @@ class Gitter extends Diagram {
     try {
       elements = JSON.parse(descriptors).elements;
     } catch(e) {
-      if (notifications) {
-        notifications.showNotification('Could not load');
-      }
+      throw new Error('could not load');
     }
 
     console.log(elements);

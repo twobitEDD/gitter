@@ -1,4 +1,6 @@
+import GitterRules from './GitterRules';
+
 module.exports = {
   __init__: [ 'gitterRules' ],
-  gitterRules: [ 'type', require('./GitterRules') ]
+  gitterRules: [ 'type', GitterRules ]
 };

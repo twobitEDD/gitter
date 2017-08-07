@@ -1,7 +1,11 @@
 <p align="center">
-  <img src="docs/logo.png" />
+  <img src="docs/logo.png" width="100px" />
 </p>
 
-## Gitter - a node-based sequencer for the web
+<h1 align="center">
+  Gitter - a node-based sequencer for the web
+</h1>
 
-__[Demo](https://philippfromme.github.io/gitter-demo/)__
+> [Demo](https://philippfromme.github.io/gitter-demo/)
+
+![Screencast](docs/screencast.gif)

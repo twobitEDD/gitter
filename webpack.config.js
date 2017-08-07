@@ -1,27 +1,23 @@
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const path = require('path');
 
-const PROD = process.argv.indexOf('-p') !== -1;
-
 module.exports = {
   node: {
     fs: 'empty'
   },
-  entry: PROD
-    ? [
-      'webpack-dev-server/client?http://localhost:8000',
-      // 'webpack/hot/only-dev-server',
-      './dist/app.js',
-    ]
-    : [
+  entry: [
       './dist/app.js'
-    ],
+  ],
   module: {
     rules: [
       {
         test: /\.js$/,
         loader: 'babel-loader',
         exclude: /node_modules/,
+      },
+      {
+        test: /\.svg$/,
+        use: 'raw-loader'
       }
     ],
   },
@@ -32,11 +28,6 @@ module.exports = {
     path: path.resolve(__dirname, 'dist'),
     publicPath: '/',
     filename: 'bundle.js',
-  },
-  devServer: {
-    contentBase: './dist',
-    // hot: true,
-    historyApiFallback: true,
   },
   plugins: [
     new CopyWebpackPlugin([

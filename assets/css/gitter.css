@@ -313,42 +313,55 @@ svg.new-parent {
   display: none;
 }
 
-/** sound select overlay */
-#sound-select-overlay {
+/** radial menu */
+.radial-menu .entry {
   position: absolute;
-  height: 100%;
-  width: 100%;
-  padding: 10px;
-  z-index: 100000;
-  top: 0;
-  left: 0;
-  background: rgba(0, 0, 0, 0.75);
-  color: #fff;
-  font-size: 18px;
-  box-sizing: border-box;
-}
-
-#sound-select-overlay .title {
-  margin-bottom: 20px;
-}
-
-#sound-select-overlay.hidden {
-  display: none;
-}
-
-#sound-select-overlay .sound-select-button {
-  display: inline-block;
-  width: 20%;
-  margin: 0 10px 10px 0;
-  padding: 10px;
-  border: solid 2px #fff;
+  border-radius: 100%;
+  border: solid 1.5px #999;
+  background-color: #000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #999;
+  font-size: 6px;
   user-select: none;
-  box-sizing: border-box;
-  text-align: center;
 }
 
-#sound-select-overlay .sound-select-button:hover {
-  cursor: default;
-  background-color: #fff;
-  color: #000;
+.radial-menu .entry svg {
+  fill: #999;
+  stroke: #999;
+}
+
+.radial-menu .entry:hover,
+.radial-menu .entry.active {
+  border-color: #fff;
+  color: #fff;
+}
+
+.radial-menu .entry:hover svg,
+.radial-menu .entry.active svg {
+  fill: #fff !important;
+  stroke: #fff !important;
+}
+
+.radial-menu .entry-remove:hover {
+  border-color: #D1345B;
+}
+
+.radial-menu .entry-remove {
+  border-color: #333;
+}
+
+.radial-menu .entry-remove svg {
+  fill: #333;
+  stroke: #333;
+}
+
+.radial-menu .entry-remove:hover svg {
+  fill: #D1345B !important;
+  stroke: #D1345B !important;
+}
+
+.radial-menu .entry svg {
+  width: 75%;
 }
