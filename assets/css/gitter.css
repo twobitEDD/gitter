@@ -180,11 +180,11 @@ svg.new-parent {
 }
 
 .icon-gitter-listener {
-  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" stroke-width="5" stroke="%23999" fill="none" viewBox="0 0 120 120"><circle cx="60" cy="60" r="40"/><circle cx="60" cy="60" r="20"/></svg>');
+  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" stroke-width="5" stroke="%23999" fill="none" viewBox="0 0 120 120"><circle cx="60" cy="60" r="40"/><circle cx="60" cy="60" r="27"/></svg>');
 }
 
 .icon-gitter-listener:hover {
-  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" stroke-width="5" stroke="%23D1345B" fill="none" viewBox="0 0 120 120"><circle cx="60" cy="60" r="40"/><circle stroke="%2334D1BF" cx="60" cy="60" r="20"/></svg>');
+  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" stroke-width="5" stroke="%23D1345B" fill="none" viewBox="0 0 120 120"><circle cx="60" cy="60" r="40"/><circle stroke="%2334D1BF" cx="60" cy="60" r="27"/></svg>');
 }
 
 .icon-lasso-tool {
@@ -325,6 +325,7 @@ svg.new-parent {
   color: #999;
   font-size: 6px;
   user-select: none;
+  cursor: default;
 }
 
 .radial-menu .entry svg {

@@ -8,13 +8,32 @@ import svgCreate from 'tiny-svg/lib/create';
 
 import { isEmitter, isListener, isConnection } from '../util/GitterUtil';
 
+function getLabel(soundId) {
+  switch (soundId) {
+    case 'kick':
+      return 'K';
+    case 'clap':
+      return 'C';
+    case 'snare':
+      return 'S';
+    case 'closedhat':
+      return 'CH';
+    case 'openhat':
+      return 'OH';
+    case 'tom':
+      return 'T';
+  }
+}
+
 class CustomRenderer extends BaseRenderer {
   constructor(eventBus, canvas, gitterConfig) {
     super(eventBus, 2000);
 
     this._gitterConfig = gitterConfig;
 
-    this.drawEmitter = (p, width, height, color) => {
+    this.drawEmitter = (p, element, color) => {
+      const { width, height, timeSignature } = element;
+
       const cx = width / 2,
             cy = height / 2;
 
@@ -36,10 +55,27 @@ class CustomRenderer extends BaseRenderer {
 
       svgAppend(p, circle);
 
+      var text = svgCreate('text');
+
+      text.textContent = '1/' + timeSignature;
+
+      svgAppend(p, text);
+
+      // thanks to monospace font we can do this
+      var translateX = (width / 2) - (text.textContent.length * 1.85);
+
+      svgAttr(text, {
+        transform: 'translate(' + translateX +  ', 12)',
+        fill: color,
+        fontSize: '6'
+      });
+
       return circle;
     };
 
-    this.drawListener = (p, width, height, outerColor, innerColor) => {
+    this.drawListener = (p, element, outerColor, innerColor) => {
+      const { width, height, sound } = element;
+
       const cx = width / 2,
             cy = height / 2;
 
@@ -66,13 +102,28 @@ class CustomRenderer extends BaseRenderer {
       svgAttr(innerCircle, {
         cx: cx,
         cy: cy,
-        r: Math.round((width + height) / 4) - 6,
+        r: Math.round((width + height) / 4) - 3,
         stroke: innerColor
       });
 
       svgAttr(innerCircle, attrs);
 
       svgAppend(p, innerCircle);
+
+      var text = svgCreate('text');
+      
+      text.textContent = getLabel(sound) || '';
+
+      svgAppend(p, text);
+
+      // thanks to monospace font we can do this
+      var translateX = (width / 2) - (text.textContent.length * 1.85);
+
+      svgAttr(text, {
+        transform: 'translate(' + translateX +  ', 12)',
+        fill: innerColor,
+        fontSize: '6'
+      });
 
       return circle;
     };
@@ -127,9 +178,9 @@ class CustomRenderer extends BaseRenderer {
 
   drawShape(parent, element) {
     if (isEmitter(element)) {
-      return this.drawEmitter(parent, element.width, element.height, this._gitterConfig.emitterColor);
+      return this.drawEmitter(parent, element, this._gitterConfig.emitterColor);
     } else if (isListener(element)) {
-      return this.drawListener(parent, element.width, element.height, this._gitterConfig.emitterColor, this._gitterConfig.listenerColor);
+      return this.drawListener(parent, element, this._gitterConfig.emitterColor, this._gitterConfig.listenerColor);
     }
   }
 

@@ -8,10 +8,28 @@ function calculateStep(numberOfEntries) {
   return 2 * Math.PI / numberOfEntries;
 }
 
+function getLabel(soundId) {
+  switch (soundId) {
+    case 'kick':
+      return 'K';
+    case 'clap':
+      return 'C';
+    case 'snare':
+      return 'S';
+    case 'closedhat':
+      return 'CH';
+    case 'openhat':
+      return 'OH';
+    case 'tom':
+      return 'T';
+  }
+}
+
 class RadialMenu {
   constructor(commandStack, gitterConfig, eventBus, modeling, overlays) {
     this._commandStack = commandStack;
     this._gitterConfig = gitterConfig;
+    this._eventBus = eventBus;
     this._modeling = modeling;
     this._overlays = overlays;
 
@@ -56,11 +74,11 @@ class RadialMenu {
 
     const html = this.getOverlay(element);
     
-    // TODO: fix, why -10?
+    // why is -1.5 necessary?
     this.overlay = this._overlays.add(element, 'menu', {
       position: {
-        top: -10,
-        left: -10
+        top: this._gitterConfig.shapeSize / 2 - 1.5,
+        left: this._gitterConfig.shapeSize / 2 - 1.5
       },
       html
     });
@@ -101,6 +119,10 @@ class RadialMenu {
               properties: {
                 timeSignature: timeSignature.id
               }
+            });
+
+            this._eventBus.fire('element.changed', {
+              element: this.element
             });
 
             this.updateOverlay(this.element);
@@ -147,10 +169,14 @@ class RadialMenu {
               }
             });
 
+            this._eventBus.fire('element.changed', {
+              element: this.element
+            });
+
             this.updateOverlay(this.element);
           },
           addClasses,
-          icon: this._gitterConfig.icons[sound.id]
+          label: getLabel(sound.id)
         });
       });
 
@@ -178,8 +204,8 @@ class RadialMenu {
       const left = Math.sin(i * step) * shapeSize * 2;
     
       Object.assign(entry.style, {
-        top: (top + shapeSize / 2) + 'px',
-        left: (left + shapeSize / 2) + 'px',
+        top: (top - shapeSize / 2) + 'px',
+        left: (left - shapeSize / 2) + 'px',
         width: shapeSize + 'px',
         height: shapeSize + 'px'
       });
