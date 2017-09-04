@@ -1,10 +1,14 @@
 class ChangeRootPropertiesHandler {
   execute({ mainPart, properties }) {
-    mainPart.setBPM(properties.tempo);
+    if (properties.tempo) {
+      mainPart.setBPM(properties.tempo);
+    }
   }
 
   revert({ mainPart, oldProperties }) {
-    mainPart.setBPM(oldProperties.tempo);
+    if (oldProperties.tempo) {
+      mainPart.setBPM(oldProperties.tempo);
+    }
   }
 }
 

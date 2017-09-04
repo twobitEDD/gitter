@@ -1,4 +1,6 @@
 const p5 = require('p5');
+
+// extend p5 with sound
 require('p5/lib/addons/p5.sound.js');
 
 class Sounds {
@@ -7,15 +9,17 @@ class Sounds {
     this._gitterConfig = gitterConfig;
     this._loadingOverlay = loadingOverlay;
 
-    this._sounds = {
-      none: {
-        sound: {
-          rate() {},
-          play() {}
-        },
-        label: 'None'
-      }
+    this.soundKit = gitterConfig.initialSoundKit;
+
+    this.noneSound = {
+      sound: {
+        rate() {},
+        play() {}
+      },
+      label: 'None'
     };
+
+    this._sounds = {};
 
     this.loadSounds();
   }
@@ -27,37 +31,50 @@ class Sounds {
 
     let numberLoading = 0;
 
-    this._gitterConfig.sounds.forEach(s => {
-      numberLoading++;
+    Object.entries(this._gitterConfig.soundKits).forEach(entry => {
+      const soundKit = entry[0],
+            sounds = entry[1].sounds;
 
-      const sound = p5.prototype.loadSound(s.path, () => {
-        numberLoading--;
+      this._sounds[soundKit] = {};
 
-        if (numberLoading === 0) {
-          this._loadingOverlay.removeLoadingComponent(this);
-
-          this._eventBus.fire('gitter.sounds.loaded');
-        }
+      sounds.forEach(s => {
+        numberLoading++;
+  
+        const sound = p5.prototype.loadSound(s.path, () => {
+          numberLoading--;
+  
+          if (numberLoading === 0) {
+            this._loadingOverlay.removeLoadingComponent(this);
+  
+            this._eventBus.fire('gitter.sounds.loaded');
+          }
+        });
+  
+        this._sounds[soundKit][s.id] = {
+          sound,
+          label: s.label
+        };
       });
-
-      this._sounds[s.id] = {
-        sound,
-        label: s.label
-      };
     });
+
+    this.soundKit = Object.keys(this._gitterConfig.soundKits)[0];
   }
 
   getSound(soundId) {
-    if (this._sounds[soundId]) {
-      return this._sounds[soundId];
+    if (this._sounds[this.soundKit][soundId]) {
+      return this._sounds[this.soundKit][soundId];
     } else {
 
       // return mock sound
-      return this._sounds.none;
+      return this.noneSound;
     }
   }
 
-  getAllSounds() {
+  setSoundKit(soundKit) {
+    this.soundKit = soundKit;
+  }
+
+  getSounds() {
     return this._sounds;
   }
 }

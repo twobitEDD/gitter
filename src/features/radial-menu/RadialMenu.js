@@ -26,12 +26,13 @@ function getLabel(soundId) {
 }
 
 class RadialMenu {
-  constructor(commandStack, gitterConfig, eventBus, modeling, overlays) {
+  constructor(commandStack, gitterConfig, eventBus, modeling, overlays, sounds) {
     this._commandStack = commandStack;
     this._gitterConfig = gitterConfig;
     this._eventBus = eventBus;
     this._modeling = modeling;
     this._overlays = overlays;
+    this._sounds = sounds;
 
     this.overlay = undefined;
     this.element = undefined;
@@ -89,9 +90,6 @@ class RadialMenu {
 
     domClasses(container).add('radial-menu');
 
-    //////////
-    // Emitter
-    //////////
     if (isEmitter(element)) {
       const entryDescriptors = [{
         onClick: () => {
@@ -137,9 +135,6 @@ class RadialMenu {
       this.appendEntries(container, entries);
     } else 
     
-    //////////
-    // Listener
-    //////////
     if (isListener(element)) {
       const entryDescriptors = [{
         onClick: () => {
@@ -149,7 +144,9 @@ class RadialMenu {
         icon: this._gitterConfig.icons.remove
       }];
 
-      this._gitterConfig.sounds.forEach(sound => {
+      const soundKit = this._sounds.soundKit;
+
+      this._gitterConfig.soundKits[soundKit].sounds.forEach(sound => {
         const addClasses = [ `entry-${sound.id}` ];
 
         if (this.element.sound === sound.id) {
@@ -247,6 +244,13 @@ class RadialMenu {
   }
 }
 
-RadialMenu.$inject = [ 'commandStack', 'gitterConfig', 'eventBus', 'modeling', 'overlays' ];
+RadialMenu.$inject = [
+  'commandStack',
+  'gitterConfig',
+  'eventBus',
+  'modeling',
+  'overlays',
+  'sounds'
+];
 
 export default RadialMenu;

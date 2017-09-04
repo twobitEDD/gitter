@@ -25,6 +25,9 @@ function connected(source, target) {
   return connected;
 }
 
+/**
+ * Update p5.sound properties after properties change.
+ */
 class GitterUpdater extends CommandInterceptor {
   constructor(eventBus, commandStack, audio, sounds, elementRegistry, gitterConfig) {
     super(eventBus);
@@ -41,15 +44,49 @@ class GitterUpdater extends CommandInterceptor {
 
       if (isRoot(element)) {
 
-        // updates BPM on p5.sound part after BPM change
+        if (properties.tempo) {
 
-        // TODO: rename handler to avoid confusion
-        commandStack.execute('gitter.changeRootProperties', {
-          mainPart,
-          oldProperties,
-          properties
-        });
+          // updates BPM on p5.sound part after BPM change
+          commandStack.execute('gitter.changeRootProperties', {
+            mainPart,
+            oldProperties,
+            properties
+          });
+        }
 
+        // update p5.sounds after sound kit change
+        if (properties.soundKit) {
+          sounds.setSoundKit(properties.soundKit);
+
+          const listeners = elementRegistry.filter(element => isListener(element));
+  
+          listeners.forEach(listener => {
+            const onPlay = () => {
+              eventBus.fire('gitter.audio.playSound', {
+                listener
+              });
+            };
+
+            // trick handler into thinking sound has changed
+            const listenerProperties = {};
+
+            listenerProperties.sound = listener.sound;
+
+            // if mock sound no change needed
+            if (!listenerProperties.sound) {
+              return;
+            }
+  
+            commandStack.execute('gitter.changeListenerProperties', {
+              mainPart,
+              listener,
+              oldProperties: listenerProperties, // sound stays the same
+              properties: listenerProperties,
+              sounds,
+              onPlay
+            });
+          });
+        }
       } else if (isEmitter(element)) {
 
         // update time signature

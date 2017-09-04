@@ -12,7 +12,8 @@ class GitterElementFactory extends BaseElementFactory {
       root: attrs => {
         return this.baseCreate('root', Object.assign({
           id: 'root',
-          tempo: gitterConfig.initialTempo
+          tempo: gitterConfig.initialTempo,
+          soundKit: gitterConfig.initialSoundKit
         }, attrs));
       },
 

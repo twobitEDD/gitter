@@ -17,14 +17,50 @@ export default {
     { id: '16', label: '1/16' },
   ],
   initialSound: undefined,
-  sounds: [
-    { id: 'kick', label: 'Kick', path: './audio/alphabetical/kick.wav' },
-    { id: 'clap', label: 'Clap', path: './audio/alphabetical/clap.wav' },
-    { id: 'snare', label: 'Snare', path: './audio/alphabetical/snare.wav' },
-    { id: 'closedhat', label: 'Closed Hihat', path: './audio/alphabetical/closedhat.wav' },
-    { id: 'openhat', label: 'Open Hihat', path: './audio/alphabetical/openhat.wav' },
-    { id: 'tom', label: 'Tom', path: './audio/alphabetical/tom.wav' }
-  ],
+  initialSoundKit: 'alphabetical',
+  soundKits: {
+    'alphabetical': {
+      label: 'Alphabetical',
+      sounds: [
+        { id: 'kick', label: 'Kick', path: './audio/alphabetical/kick.wav' },
+        { id: 'clap', label: 'Clap', path: './audio/alphabetical/clap.wav' },
+        { id: 'snare', label: 'Snare', path: './audio/alphabetical/snare.wav' },
+        { id: 'closedhat', label: 'Closed Hihat', path: './audio/alphabetical/closedhat.wav' },
+        { id: 'openhat', label: 'Open Hihat', path: './audio/alphabetical/openhat.wav' },
+        { id: 'tom', label: 'Tom', path: './audio/alphabetical/tom.wav' }
+      ]
+    },
+    'glitch-baby': {
+      label: 'Glitch Baby',
+      sounds: [
+        { id: 'kick', label: 'Kick', path: './audio/glitch-baby/kick.wav' },
+        { id: 'clap', label: 'Clap', path: './audio/glitch-baby/clap.wav' },
+        { id: 'snare', label: 'Snare', path: './audio/glitch-baby/snare.wav' },
+        { id: 'closedhat', label: 'Closed Hihat', path: './audio/glitch-baby/closedhat.wav' },
+        { id: 'openhat', label: 'Open Hihat', path: './audio/glitch-baby/openhat.wav' },
+        { id: 'tom', label: 'Tom', path: './audio/glitch-baby/tom.wav' }
+      ]
+    },
+    'alkaloid': {
+      label: 'Alkaloid',
+      sounds: [
+        { id: 'kick', label: 'Kick', path: './audio/alkaloid/kick.wav' },
+        { id: 'clap', label: 'Clap', path: './audio/alkaloid/clap.wav' },
+        { id: 'snare', label: 'Snare', path: './audio/alkaloid/snare.wav' },
+        { id: 'closedhat', label: 'Closed Hihat', path: './audio/alkaloid/closedhat.wav' },
+        { id: 'openhat', label: 'Open Hihat', path: './audio/alkaloid/openhat.wav' },
+        { id: 'tom', label: 'Tom', path: './audio/alkaloid/tom.wav' }
+      ]
+    },
+    // 'bottle-poppin': {
+    //   label: 'Bottle Poppin',
+    //   sounds: []
+    // },
+    // 'ganja': {
+    //   label: 'Ganja',
+    //   sounds: []
+    // }
+  },
   icons: {
     remove: removeSvg
   }

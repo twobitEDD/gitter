@@ -41,17 +41,15 @@ class Audio extends CommandInterceptor {
     const delay = new p5.Delay();
 
     eventBus.on('gitter.sounds.loaded', () => {
-      const allSounds = sounds.getAllSounds();
+      const allSounds = sounds.getSounds();
 
-      Object.values(allSounds).forEach(soundObject => {
-        const { sound, label } = soundObject;
-
-        if (label === 'None') {
-          return;
-        }
-
-        reverb.process(sound, 1, 2); // reverb time, decay rate
-        delay.process(sound, .12, .1, 2300); // delay time, feedback, filter frequency
+      Object.values(allSounds).forEach(soundKit => {
+        Object.values(soundKit).forEach(soundObject => {
+          const { sound } = soundObject;
+  
+          reverb.process(sound, 1, 2); // reverb time, decay rate
+          delay.process(sound, .12, .1, 2300); // delay time, feedback, filter frequency
+        });
       });
     });
 

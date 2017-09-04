@@ -366,3 +366,40 @@ svg.new-parent {
 .radial-menu .entry svg {
   width: 75%;
 }
+
+.kit-select {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  color: #999;
+  cursor: default;
+}
+
+.kit-select .selected {
+  margin: 0;
+  text-align: right;
+  user-select: none;
+}
+
+.kit-select .selected:hover {
+  color: #FFF;
+}
+
+.kit-select .select {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  text-align: right;
+}
+
+.kit-select .select.hidden {
+  display: none;
+}
+
+.kit-select .select .option:hover {
+  color: #FFF;
+}
+
+.kit-select .select .option {
+  user-select: none;
+}

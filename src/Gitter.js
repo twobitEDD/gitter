@@ -12,6 +12,7 @@ import gitterMovePreview from './features/move-preview';
 import gitterPalette from './features/palette';
 import gitterRules from './features/rules';
 import keyboardBindings from './features/keyboard-bindings';
+import kitSelect from './features/kit-select';
 import listenerAnimation from './features/listener-animation';
 import gitterModeling from './features/modeling';
 import ordering from './features/ordering';
@@ -65,6 +66,7 @@ class Gitter extends Diagram {
       gitterPalette,
       gitterRules,
       keyboardBindings,
+      kitSelect,
       listenerAnimation,
       gitterModeling,
       ordering,

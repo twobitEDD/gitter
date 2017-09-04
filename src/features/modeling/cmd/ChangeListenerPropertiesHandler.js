@@ -6,7 +6,6 @@ class ChangeListenerPropertiesHandler {
     const { mainPart, listener, properties, oldProperties, sounds, onPlay } = context;
 
     if (properties.sound) {
-
       const oldPhrase = context.oldPhrase = mainPart.getPhrase(listener.id);
 
       if (!oldPhrase) {
