@@ -24,220 +24,235 @@ import tempoControl from './features/tempo-control';
 
 import { isRoot, isEmitter, isListener } from './util/GitterUtil';
 
-class Gitter extends Diagram {
-  constructor(options = {}) {
-    const diagramModules = [
-      {
-        gitterConfig: [ 'value', gitterConfig ],
-        connectionDocking: [ 'type', require('diagram-js/lib/layout/CroppingConnectionDocking') ]
-      },
-      require('diagram-js/lib/features/auto-scroll'),
-      require('diagram-js/lib/features/connect'),
-      require('diagram-js/lib/features/context-pad'),
-      require('diagram-js/lib/features/create'),
-      require('diagram-js/lib/features/editor-actions'),
-      require('diagram-js/lib/features/hand-tool'),
-      require('diagram-js/lib/features/keyboard'),
-      require('diagram-js/lib/features/lasso-tool'),
-      require('diagram-js/lib/features/modeling'),
-      require('diagram-js/lib/features/move'),
-      require('diagram-js/lib/features/outline'),
-      require('diagram-js/lib/features/overlays'),
-      require('diagram-js/lib/features/palette'),
-      require('diagram-js/lib/features/popup-menu'),
-      require('diagram-js/lib/features/rules'),
-      require('diagram-js/lib/features/selection'),
-      require('diagram-js/lib/features/tool-manager'),
-      require('diagram-js/lib/navigation/movecanvas'),
-      require('diagram-js/lib/navigation/zoomscroll'),
-      {
-        movePreview: [ 'value', {} ]
-      }
-    ];
+function Gitter(options) {
 
-    const gitterModules = [
-      autoConnect,
-      coreModule,
-      cropping,
-      emissionAnimation,
-      emitterAnimation,
-      gitterEmitterPreview,
-      gitterMovePreview,
-      gitterPalette,
-      gitterRules,
-      keyboardBindings,
-      kitSelect,
-      listenerAnimation,
-      gitterModeling,
-      ordering,
-      overridden,
-      radialMenu,
-      saveMidi,
-      sequences,
-      tempoControl
-    ];
+  const diagramModules = [
+    {
+      gitter: [ 'value', this ],
+      gitterConfig: [ 'value', gitterConfig ],
+      connectionDocking: [ 'type', require('diagram-js/lib/layout/CroppingConnectionDocking') ]
+    },
+    require('diagram-js/lib/features/auto-scroll'),
+    require('diagram-js/lib/features/connect'),
+    require('diagram-js/lib/features/context-pad'),
+    require('diagram-js/lib/features/create'),
+    require('diagram-js/lib/features/editor-actions'),
+    require('diagram-js/lib/features/hand-tool'),
+    require('diagram-js/lib/features/keyboard'),
+    require('diagram-js/lib/features/lasso-tool'),
+    require('diagram-js/lib/features/modeling'),
+    require('diagram-js/lib/features/move'),
+    require('diagram-js/lib/features/outline'),
+    require('diagram-js/lib/features/overlays'),
+    require('diagram-js/lib/features/palette'),
+    require('diagram-js/lib/features/popup-menu'),
+    require('diagram-js/lib/features/rules'),
+    require('diagram-js/lib/features/selection'),
+    require('diagram-js/lib/features/tool-manager'),
+    require('diagram-js/lib/navigation/movecanvas'),
+    require('diagram-js/lib/navigation/zoomscroll'),
+    {
+      movePreview: [ 'value', {} ]
+    }
+  ];
 
-    const additionalModules = options.additionalModules || [];
+  const gitterModules = [
+    autoConnect,
+    coreModule,
+    cropping,
+    emissionAnimation,
+    emitterAnimation,
+    gitterEmitterPreview,
+    gitterMovePreview,
+    gitterPalette,
+    gitterRules,
+    keyboardBindings,
+    kitSelect,
+    listenerAnimation,
+    gitterModeling,
+    ordering,
+    overridden,
+    radialMenu,
+    saveMidi,
+    sequences,
+    tempoControl
+  ];
 
-    super(Object.assign(options, {
+  const additionalModules = options.additionalModules || [];
+
+  Diagram.call(this, {
+    ...options,
+    ...{
       modules: [
         ...diagramModules,
         ...gitterModules,
         ...additionalModules
       ]
-    }));
+    }
+  });
+};
+
+Gitter.prototype = Object.create(Diagram.prototype, {
+  constructor: {
+    value: Gitter,
+    enumerable: false,
+    writable: true,
+    configurable: true
+  }
+});
+
+
+Gitter.prototype.create = function() {
+  const canvas = this.get('canvas');
+  const eventBus = this.get('eventBus');
+  const gitterConfig = this.get('gitterConfig');
+  const gitterElementFactory = this.get('gitterElementFactory');
+
+  eventBus.fire('gitter.create.start');
+
+  const rootShape = gitterElementFactory.createRoot();
+
+  canvas.setRootElement(rootShape);
+
+  const x = Math.floor(canvas.getContainer().clientWidth / 3) - 15;
+  const y = Math.floor(canvas.getContainer().clientHeight / 2) - 15;
+
+  const emitter = gitterElementFactory.createEmitter({
+    id: 'Emitter_1',
+    type: 'gitter:Emitter',
+    x,
+    y,
+    width: gitterConfig.shapeSize,
+    height: gitterConfig.shapeSize
+  });
+
+  canvas.addShape(emitter, rootShape);
+
+  eventBus.fire('gitter.create.end');
+};
+
+Gitter.prototype.load = function(descriptors) {
+  const gitterConfig = this.get('gitterConfig'),
+        canvas = this.get('canvas'),
+        modeling = this.get('modeling'),
+        gitterElementFactory = this.get('gitterElementFactory'),
+        eventBus = this.get('eventBus');
+
+  eventBus.fire('gitter.load.start');
+
+  const { shapeSize } = gitterConfig;
+
+  let elements;
+
+  try {
+    elements = JSON.parse(descriptors).elements;
+  } catch(e) {
+    throw new Error('could not load', e);
   }
 
-  create() {
-    const canvas = this.get('canvas');
-    const eventBus = this.get('eventBus');
-    const gitterConfig = this.get('gitterConfig');
-    const gitterElementFactory = this.get('gitterElementFactory');
+  this.clear();
 
-    eventBus.fire('gitter.create.start');
+  // add root first
+  const rootElement = elements.filter(({ isRoot }) => isRoot)[0];
 
-    const rootShape = gitterElementFactory.createRoot();
-    
-    canvas.setRootElement(rootShape);
-    
-    const x = Math.floor(canvas.getContainer().clientWidth / 3) - 15;
-    const y = Math.floor(canvas.getContainer().clientHeight / 2) - 15;
-    
-    const emitter = gitterElementFactory.createEmitter({
-      id: 'Emitter_1',
-      type: 'gitter:Emitter',
-      x,
-      y,
-      width: gitterConfig.shapeSize,
-      height: gitterConfig.shapeSize
-    });
-    
-    canvas.addShape(emitter, rootShape);
-
-    eventBus.fire('gitter.create.end');
+  if (!rootElement) {
+    throw new Error('root not found');
   }
 
-  load(descriptors) {
-    const gitterConfig = this.get('gitterConfig'),
-          canvas = this.get('canvas'),
-          modeling = this.get('modeling'),
-          gitterElementFactory = this.get('gitterElementFactory'),
-          eventBus = this.get('eventBus');
+  const { tempo, soundKit } = rootElement;
 
-    eventBus.fire('gitter.load.start');
+  const rootShape = gitterElementFactory.createRoot({
+    tempo,
+    soundKit
+  });
 
-    const { shapeSize } = gitterConfig;
+  canvas.setRootElement(rootShape);
 
-    let elements;
+  elements.forEach(element => {
 
-    try {
-      elements = JSON.parse(descriptors).elements;
-    } catch(e) {
-      throw new Error('could not load');
+    if (element.isRoot) {
+      return;
+    } else if (isEmitter(element)) {
+      const { type, x, y, timeSignature } = element;
+
+      const emitterShape = gitterElementFactory.createEmitter({
+        type,
+        timeSignature,
+        width: shapeSize,
+        height: shapeSize
+      });
+
+      modeling.createShape(emitterShape, { x, y }, rootShape);
+    } else if (isListener(element)) {
+      const { type, x, y, sound } = element;
+
+      const listenerShape = gitterElementFactory.createEmitter({
+        type,
+        sound,
+        width: shapeSize,
+        height: shapeSize
+      });
+
+      modeling.createShape(listenerShape, { x, y }, rootShape);
     }
 
-    console.log(elements);
+  });
 
-    this.clear();
+  eventBus.fire('gitter.load.end');
+};
 
-    // add root first
-    const rootElement = elements.filter(({ isRoot }) => isRoot)[0];
+Gitter.prototype.save = function() {
+  console.log(this);
 
-    if (!rootElement) {
-      throw new Error('root not found');
+  const elementRegistry = this.get('elementRegistry');
+
+  let elements = [];
+
+  Object.values(elementRegistry._elements).forEach(({ element }) => {
+
+    let descriptor;
+
+    if (isRoot(element)) {
+      descriptor = {
+        isRoot: true,
+        tempo: element.tempo,
+        soundKit: element.soundKit
+      };
+    } else if (isEmitter(element)) {
+      descriptor = {
+        type: element.type,
+        timeSignature: element.timeSignature,
+        x: element.x,
+        y: element.y
+      };
+    } else if (isListener(element)) {
+      descriptor = {
+        type: element.type,
+        sound: element.sound,
+        x: element.x,
+        y: element.y
+      };
     }
 
-    const { tempo } = rootElement;
-
-    const rootShape = gitterElementFactory.createRoot({
-      tempo
-    });
-
-    canvas.setRootElement(rootShape);
-
-    elements.forEach(element => {
-      
-      if (element.isRoot) {
-        return;
-      } else if (isEmitter(element)) {
-        const { type, x, y, timeSignature } = element;
-
-        const emitterShape = gitterElementFactory.createEmitter({
-          type,
-          timeSignature,
-          width: shapeSize,
-          height: shapeSize
-        });
-
-        modeling.createShape(emitterShape, { x, y }, rootShape);
-      } else if (isListener(element)) {
-        const { type, x, y, sound } = element;
-
-        const listenerShape = gitterElementFactory.createEmitter({
-          type,
-          sound,
-          width: shapeSize,
-          height: shapeSize
-        });
-
-        modeling.createShape(listenerShape, { x, y }, rootShape);
-      }
-
-    });
-
-    eventBus.fire('gitter.load.end');
-  }
-
-  save() {
-    const elementRegistry = this.get('elementRegistry');
-
-    let elements = [];
-
-    Object.values(elementRegistry._elements).forEach(({ element }) => {
-
-      let descriptor;
-
-      if (isRoot(element)) {
-        descriptor = {
-          isRoot: true,
-          tempo: element.tempo
-        };
-      } else if (isEmitter(element)) {
-        descriptor = {
-          type: element.type,
-          timeSignature: element.timeSignature,
-          x: element.x,
-          y: element.y
-        };
-      } else if (isListener(element)) {
-        descriptor = {
-          type: element.type,
-          sound: element.sound,
-          x: element.x,
-          y: element.y
-        };
-      }
-
-      if (descriptor) {
-        elements = [
-          ...elements,
-          descriptor
-        ];
-      }
-    });
-
-    return JSON.stringify({ elements });
-  }
-
-  saveMidi() {
-    const saveMidi = this.get('saveMidi');
-
-    if (!saveMidi) {
-      throw new Error('feature not found');
+    if (descriptor) {
+      elements = [
+        ...elements,
+        descriptor
+      ];
     }
+  });
 
-    saveMidi.saveMidi();
+  return JSON.stringify({ elements });
+};
+
+Gitter.prototype.saveMidi = function() {
+  const saveMidi = this.get('saveMidi');
+
+  if (!saveMidi) {
+    throw new Error('feature not found');
   }
-}
+
+  saveMidi.saveMidi();
+};
 
 export default Gitter;
