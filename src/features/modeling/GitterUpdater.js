@@ -1,8 +1,5 @@
 import CommandInterceptor from 'diagram-js/lib/command/CommandInterceptor';
 
-import ChangeRootPropertiesHandler from './cmd/ChangeRootPropertiesHandler';
-import ChangeListenerPropertiesHandler from './cmd/ChangeListenerPropertiesHandler';
-
 import { isRoot, isEmitter, isListener } from '../../util/GitterUtil';
 import { getSequence } from '../../util/SequenceUtil';
 import { getDistance } from '../../util/GeometryUtil';
@@ -25,109 +22,117 @@ function connected(source, target) {
   return connected;
 }
 
+
 /**
  * Update p5.sound properties after properties change.
+ *
+ * Changes are always applied immediately, i.e. during
+ * <executed> and <reverted> phases.
  */
 class GitterUpdater extends CommandInterceptor {
-  constructor(eventBus, commandStack, audio, sounds, elementRegistry, gitterConfig) {
+
+  constructor(eventBus, audio, sounds, elementRegistry, gitterConfig) {
+
     super(eventBus);
 
     const { maxDistance, offsetDistance } = gitterConfig;
 
-    commandStack.registerHandler('gitter.changeRootProperties', ChangeRootPropertiesHandler);
-    commandStack.registerHandler('gitter.changeListenerProperties', ChangeListenerPropertiesHandler);
-
     const mainPart = audio.getMainPart();
 
-    this.postExecute('gitter.changeProperties', ({ context }) => {
-      const { element, oldProperties, properties } = context;
+
+    function updateListener(listener, soundId) {
+
+      // if mock sound and no sound assignment => no change needed
+      if (!soundId && !listener.sound) {
+        return;
+      }
+
+      const onPlay = function() {
+        eventBus.fire('gitter.audio.playSound', {
+          listener
+        });
+      };
+
+      const { sound } = sounds.getSound(soundId || listener.sound);
+      const oldPhrase = mainPart.getPhrase(listener.id);
+
+      const newPhrase = new p5.Phrase(listener.id, (time, playbackRate) => {
+        sound.rate(playbackRate);
+        sound.play(time);
+        onPlay();
+      }, oldPhrase.sequence);
+
+      mainPart.removePhrase(listener.id);
+      mainPart.addPhrase(newPhrase);
+    }
+
+
+    function updateSounds(element, properties) {
 
       if (isRoot(element)) {
 
-        if (properties.tempo) {
+        const { tempo, soundKit } = properties;
 
-          // updates BPM on p5.sound part after BPM change
-          commandStack.execute('gitter.changeRootProperties', {
-            mainPart,
-            oldProperties,
-            properties
-          });
+        // updates BPM on p5.sound part after BPM change
+        if (tempo) {
+          mainPart.setBPM(tempo);
         }
 
         // update p5.sounds after sound kit change
-        if (properties.soundKit) {
-          sounds.setSoundKit(properties.soundKit);
+        if (soundKit) {
+          sounds.setSoundKit(soundKit);
 
           const listeners = elementRegistry.filter(element => isListener(element));
-  
-          listeners.forEach(listener => {
-            const onPlay = () => {
-              eventBus.fire('gitter.audio.playSound', {
-                listener
-              });
-            };
 
-            // trick handler into thinking sound has changed
-            const listenerProperties = {};
-
-            listenerProperties.sound = listener.sound;
-
-            // if mock sound no change needed
-            if (!listenerProperties.sound) {
-              return;
-            }
-  
-            commandStack.execute('gitter.changeListenerProperties', {
-              mainPart,
-              listener,
-              oldProperties: listenerProperties, // sound stays the same
-              properties: listenerProperties,
-              sounds,
-              onPlay
-            });
-          });
+          listeners.forEach(updateListener);
         }
       } else if (isEmitter(element)) {
 
-        // update time signature
-        if (properties.timeSignature) {
-          const listeners = elementRegistry.filter(e => {
-            return isListener(e) && connected(element, e);
-          });
-
-          listeners.forEach(listener => {
-            const distance = getDistance(element, listener);
-
-            const sequence = getSequence(distance, maxDistance, offsetDistance, properties.timeSignature);
-
-            audio.updateSequence(sequence, element, listener);
-          });
-        }
+        // NOOP; we still do this in POST EXECUTE
       } else if (isListener(element)) {
+        updateListener(element, properties.sound);
+      }
+    }
 
-        // update p5.sound sound after sound change
-        const onPlay = () => {
-          eventBus.fire('gitter.audio.playSound', {
-            listener: element
-          });
-        };
+    this.postExecute('gitter.changeProperties', ({ context }) => {
 
-        commandStack.execute('gitter.changeListenerProperties', {
-          mainPart,
-          listener: element,
-          oldProperties,
-          properties,
-          sounds,
-          onPlay
+      const { element, properties } = context;
+
+      // update time signature
+      if (properties.timeSignature) {
+        const listeners = elementRegistry.filter(e => {
+          return isListener(e) && connected(element, e);
+        });
+
+        listeners.forEach(listener => {
+          const distance = getDistance(element, listener);
+
+          const sequence = getSequence(distance, maxDistance, offsetDistance, properties.timeSignature);
+
+          audio.updateSequence(sequence, element, listener);
         });
       }
     });
+
+    this.executed('gitter.changeProperties', ({ context }) => {
+
+      const { element, properties } = context;
+
+      updateSounds(element, properties);
+    });
+
+    this.reverted('gitter.changeProperties', ({ context }) => {
+
+      const { element, oldProperties } = context;
+
+      updateSounds(element, oldProperties);
+    });
+
   }
 }
 
 GitterUpdater.$inject = [
   'eventBus',
-  'commandStack',
   'audio',
   'sounds',
   'elementRegistry',

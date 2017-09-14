@@ -1,4 +1,5 @@
 class ChangePropertiesHandler {
+
   execute(context) {
     const { element, properties } = context;
 
@@ -14,6 +15,8 @@ class ChangePropertiesHandler {
     });
 
     context.oldProperties = oldProperties;
+
+    return element;
   }
 
   revert(context) {
@@ -24,6 +27,8 @@ class ChangePropertiesHandler {
       // set new property
       element[propertyKey] = oldProperties[propertyKey];
     });
+
+    return element;
   }
 }
 
