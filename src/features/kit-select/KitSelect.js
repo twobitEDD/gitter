@@ -103,7 +103,7 @@ class KitSelect {
 
     const label = this._gitterConfig.soundKits[soundKit].label;
 
-    this.selected.textContent = `KIT: ${label}`;
+    this.selected.textContent = `Kit: ${label}`;
   }
 }
 

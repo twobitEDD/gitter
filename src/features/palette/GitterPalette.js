@@ -42,20 +42,20 @@ class GitterPalette {
       'gitter-listener': createAction(
         'listener', 'gitter', 'icon-gitter-listener'
       ),
-      'gitter-separator': {
-        group: 'gitter',
-        separator: true
-      },
-      'lasso-tool': {
-        group: 'tools',
-        className: 'bpmn-icon-lasso-tool',
-        title: 'Activate the lasso tool',
-        action: {
-          click: function(event) {
-            lassoTool.activateSelection(event);
-          }
-        }
-      }
+      // 'gitter-separator': {
+      //   group: 'gitter',
+      //   separator: true
+      // },
+      // 'lasso-tool': {
+      //   group: 'tools',
+      //   className: 'bpmn-icon-lasso-tool',
+      //   title: 'Activate the lasso tool',
+      //   action: {
+      //     click: function(event) {
+      //       lassoTool.activateSelection(event);
+      //     }
+      //   }
+      // }
     });
 
     return actions;
