@@ -24,6 +24,10 @@ class KitSelect {
         this.update(element.soundKit);
       }
     });
+
+    eventBus.on('sounds.setSoundKit', ({ soundKit }) => {
+      this.update(soundKit);
+    });
   }
 
   init() {

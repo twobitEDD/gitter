@@ -1,0 +1,110 @@
+/**
+ * hot cues
+ */
+
+.hot-cues {
+  height: 50px;
+  bottom: 20px;
+  left: 50%;
+  position: absolute;
+  transform: translate(-50%);
+}
+
+.hot-cues .slots .slot {
+  box-sizing: border-box;
+  background: rgba(0, 0, 0, 0.75);
+  margin-right: 4px;
+  width: 50px;
+  height: 50px;
+  display: inline-flex;
+  flex: 1;
+  flex-flow: column;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  border: solid 2px #999;
+  border-radius: 4px;
+  color: #999;
+  overflow: hidden;
+  user-select: none;
+  cursor: default;
+}
+
+.hot-cues .slots .slot:not(.existing):hover {
+  border-color: #34D1BF;
+  color: #34D1BF;
+}
+
+.hot-cues .slots .slot.existing:hover {
+  border-color: #D1345B;
+  color: #D1345B;
+}
+
+.hot-cues .slots .slot:last-child {
+  margin-right: 0;
+}
+
+.hot-cues .dirty-indicator {
+  display: none;
+}
+
+.hot-cues .dirty .dirty-indicator {
+  display: inline;
+}
+
+.hot-cues .slot.existing {
+  border-color: #34D1BF;
+  color: #34D1BF;
+}
+
+.hot-cues .slot.saved {
+  animation: saved .25s linear 1;
+}
+
+.hot-cues .slot.active {
+  border-color: #D1345B;
+  color: #D1345B;
+}
+
+
+.hot-cues .slot.jumping:not(.active) {
+  animation: jumping 0.5s linear infinite;
+}
+
+@keyframes jumping {
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes saved {
+  from {
+    transform: scale(1.0);
+  }
+
+  50% {
+    transform: scale(1.1);
+  }
+
+  to {
+    transform: scale(1.0);
+  }
+}
+
+/**
+ * progress indicator
+ */
+
+.progress-indicator {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+}
+
+.progress-indicator .progress {
+  background: #D1345B;
+  height: 3px;
+}

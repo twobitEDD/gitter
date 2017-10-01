@@ -5,7 +5,7 @@
 .tempo-control {
   position: absolute;
   right: 20px;
-  bottom: 20px;
+  bottom: 25px;
   color: #999;
   cursor: default;
   user-select: none;

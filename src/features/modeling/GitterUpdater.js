@@ -84,7 +84,9 @@ class GitterUpdater extends CommandInterceptor {
 
           const listeners = elementRegistry.filter(element => isListener(element));
 
-          listeners.forEach(updateListener);
+          listeners.forEach(listener => {
+            updateListener(listener, listener.sound);
+          });
         }
       } else if (isEmitter(element)) {
 

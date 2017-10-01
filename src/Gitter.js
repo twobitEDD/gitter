@@ -21,6 +21,7 @@ import radialMenu from './features/radial-menu';
 import saveMidi from './features/save-midi';
 import sequences from './features/sequences';
 import tempoControl from './features/tempo-control';
+import hotCues from './features/hot-cues';
 
 import { isRoot, isEmitter, isListener } from './util/GitterUtil';
 
@@ -66,6 +67,7 @@ function Gitter(options) {
     gitterMovePreview,
     gitterPalette,
     gitterRules,
+    hotCues,
     keyboardBindings,
     kitSelect,
     listenerAnimation,
@@ -101,7 +103,6 @@ Gitter.prototype = Object.create(Diagram.prototype, {
   }
 });
 
-
 Gitter.prototype.create = function() {
   const canvas = this.get('canvas');
   const eventBus = this.get('eventBus');
@@ -131,24 +132,17 @@ Gitter.prototype.create = function() {
   eventBus.fire('gitter.create.end');
 };
 
-Gitter.prototype.load = function(descriptors) {
+/**
+ * Internal load. Loads all elements.
+ */
+Gitter.prototype._load = function(elements) {
   const gitterConfig = this.get('gitterConfig'),
         canvas = this.get('canvas'),
         modeling = this.get('modeling'),
         gitterElementFactory = this.get('gitterElementFactory'),
-        eventBus = this.get('eventBus');
-
-  eventBus.fire('gitter.load.start');
+        sounds = this.get('sounds');
 
   const { shapeSize } = gitterConfig;
-
-  let elements;
-
-  try {
-    elements = JSON.parse(descriptors).elements;
-  } catch(e) {
-    throw new Error('could not load', e);
-  }
 
   this.clear();
 
@@ -167,6 +161,8 @@ Gitter.prototype.load = function(descriptors) {
   });
 
   canvas.setRootElement(rootShape);
+
+  sounds.setSoundKit(soundKit);
 
   elements.forEach(element => {
 
@@ -197,19 +193,40 @@ Gitter.prototype.load = function(descriptors) {
     }
 
   });
-
-  eventBus.fire('gitter.load.end');
 };
 
-Gitter.prototype.save = function() {
-  console.log(this);
+/**
+ * Loads all elements and configurations.
+ */
+Gitter.prototype.load = function(descriptors) {
+  const eventBus = this.get('eventBus'),
+        exportConfig = this.get('exportConfig');
+  
+  eventBus.fire('gitter.load.start');
 
+  try {
+    const { elements, exportedConfigs } = JSON.parse(descriptors);
+
+    this._load(elements);
+    
+    exportConfig.import(exportedConfigs);
+    
+    eventBus.fire('gitter.load.end');
+  } catch(e) {
+    throw new Error('could not load', e);
+  }
+};
+
+/**
+ * Internal save. Saves all elements.
+ */
+Gitter.prototype._save = function() {
   const elementRegistry = this.get('elementRegistry');
 
   let elements = [];
-
+  
   Object.values(elementRegistry._elements).forEach(({ element }) => {
-
+  
     let descriptor;
 
     if (isRoot(element)) {
@@ -242,7 +259,21 @@ Gitter.prototype.save = function() {
     }
   });
 
-  return JSON.stringify({ elements });
+  return elements;
+};
+
+/**
+ * Saves all elements and additional configurations.
+ */
+Gitter.prototype.save = function() {
+  const exportConfig = this.get('exportConfig');
+
+  const exportedConfigs = exportConfig.export();
+
+  return JSON.stringify({
+    elements: this._save(),
+    exportedConfigs: exportedConfigs
+  });
 };
 
 Gitter.prototype.saveMidi = function() {

@@ -72,6 +72,10 @@ class Sounds {
 
   setSoundKit(soundKit) {
     this.soundKit = soundKit;
+
+    this._eventBus.fire('sounds.setSoundKit', {
+      soundKit
+    });
   }
 
   getSounds() {

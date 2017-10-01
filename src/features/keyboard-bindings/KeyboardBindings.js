@@ -1,7 +1,8 @@
 import domEvent from 'min-dom/lib/event';
 
 class KeyboardBindings {
-  constructor(eventBus, keyboard, canvas, elementRegistry, selection, lassoTool, handTool) {
+
+  constructor(eventBus, keyboard, canvas, elementRegistry, selection, lassoTool, handTool, hotCues) {
     this._canvas = canvas;
     this._elementRegistry = elementRegistry;
     this._selection = selection;
@@ -35,6 +36,20 @@ class KeyboardBindings {
       // ctrl + a -> select all elements
       if (key === 65 && keyboard.isCmd(modifiers)) {
         this.selectAllElements();
+
+        return true;
+      }
+
+      // bind CTRL + 1..0 to <occupy slot>
+      // bind 1..0 to <jump to slot>
+      if (key >= 49 && key <= 57) {
+        var slot = key - 49;
+
+        if (keyboard.isCmd(modifiers)) {
+          hotCues.saveSlot(slot);
+        } else {
+          hotCues.jumpTo(slot);
+        }
 
         return true;
       }
@@ -84,7 +99,8 @@ KeyboardBindings.$inject = [
   'elementRegistry',
   'selection',
   'lassoTool',
-  'handTool'
+  'handTool',
+  'hotCues'
 ];
 
 module.exports = KeyboardBindings;
