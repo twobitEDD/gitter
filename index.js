@@ -1,3 +1,1 @@
-import Gitter from './src/Gitter';
-
-export default Gitter;
+export { default } from './src/Gitter';
