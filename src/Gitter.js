@@ -201,16 +201,16 @@ Gitter.prototype._load = function(elements) {
 Gitter.prototype.load = function(descriptors) {
   const eventBus = this.get('eventBus'),
         exportConfig = this.get('exportConfig');
-  
+
   eventBus.fire('gitter.load.start');
 
   try {
     const { elements, exportedConfigs } = JSON.parse(descriptors);
 
     this._load(elements);
-    
+
     exportConfig.import(exportedConfigs);
-    
+
     eventBus.fire('gitter.load.end');
   } catch(e) {
     throw new Error('could not load', e);
@@ -224,9 +224,9 @@ Gitter.prototype._save = function() {
   const elementRegistry = this.get('elementRegistry');
 
   let elements = [];
-  
+
   Object.values(elementRegistry._elements).forEach(({ element }) => {
-  
+
     let descriptor;
 
     if (isRoot(element)) {

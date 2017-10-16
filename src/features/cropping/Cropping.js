@@ -1,6 +1,6 @@
 import CommandInterceptor from 'diagram-js/lib/command/CommandInterceptor';
 
-class Cropping extends CommandInterceptor {
+export default class Cropping extends CommandInterceptor {
   constructor(eventBus, gitterConnectionCropping) {
     super(eventBus);
 
@@ -24,6 +24,3 @@ class Cropping extends CommandInterceptor {
 }
 
 Cropping.$inject = [ 'eventBus', 'gitterConnectionCropping' ];
-
-// export default doesn't work
-export default Cropping;
