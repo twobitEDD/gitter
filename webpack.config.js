@@ -6,7 +6,7 @@ module.exports = {
     fs: 'empty'
   },
   entry: [
-      './src/Gitter.js'
+    './src/Gitter.js'
   ],
   module: {
     rules: [
