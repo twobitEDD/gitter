@@ -6,7 +6,7 @@ module.exports = {
     fs: 'empty'
   },
   entry: [
-      './dist/app.js'
+      './src/Gitter.js'
   ],
   module: {
     rules: [
@@ -27,7 +27,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     publicPath: '/',
-    filename: 'bundle.js',
+    filename: 'gitter.js',
   },
   plugins: [
     new CopyWebpackPlugin([
