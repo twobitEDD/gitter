@@ -1,4 +1,4 @@
-import reduce from 'lodash/reduce';
+import reduce from 'lodash-es/reduce';
 
 import RuleProvider from 'diagram-js/lib/features/rules/RuleProvider';
 
