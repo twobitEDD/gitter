@@ -3,8 +3,8 @@
     "env"
   ],
   "plugins": [
-    "transform-class-properties",
-    "transform-object-rest-spread",
-    "add-module-exports"
+    "lodash",
+    "add-module-exports",
+    "transform-object-rest-spread"
   ]
 }

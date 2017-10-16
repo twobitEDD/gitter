@@ -1,5 +1,5 @@
-import flatten from 'lodash-es/flatten';
-import find from 'lodash-es/find';
+import { flatten } from 'lodash-es';
+import { find } from 'lodash-es';
 
 import svgAppend from 'tiny-svg/lib/append';
 import svgAttr from 'tiny-svg/lib/attr';

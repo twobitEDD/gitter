@@ -1,5 +1,3 @@
-import reduce from 'lodash-es/reduce';
-
 import RuleProvider from 'diagram-js/lib/features/rules/RuleProvider';
 
 import { isEmitter, isListener, isConnection } from '../../util/GitterUtil';

@@ -1,7 +1,7 @@
 import OrderingProvider from 'diagram-js/lib/features/ordering/OrderingProvider';
 
-import find from 'lodash-es/find';
-import findIndex from 'lodash-es/findIndex';
+import { find } from 'lodash-es';
+import { findIndex } from 'lodash-es';
 
 import { isConnection } from '../../util/GitterUtil';
 
