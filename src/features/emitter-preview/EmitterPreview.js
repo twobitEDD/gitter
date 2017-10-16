@@ -169,4 +169,4 @@ class EmitterPreview {
 
 EmitterPreview.$inject = [ 'eventBus', 'canvas', 'elementRegistry', 'gitterConfig' ];
 
-module.exports = EmitterPreview;
+export default EmitterPreview;

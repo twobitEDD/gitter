@@ -42,4 +42,4 @@ class LoadingOverlay {
 
 LoadingOverlay.$inject = [ 'eventBus', 'canvas' ];
 
-module.exports = LoadingOverlay;
+export default LoadingOverlay;

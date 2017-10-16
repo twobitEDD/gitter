@@ -1,6 +1,6 @@
 import GitterRules from './GitterRules';
 
-module.exports = {
+export default {
   __init__: [ 'gitterRules' ],
   gitterRules: [ 'type', GitterRules ]
 };

@@ -103,4 +103,4 @@ KeyboardBindings.$inject = [
   'hotCues'
 ];
 
-module.exports = KeyboardBindings;
+export default KeyboardBindings;

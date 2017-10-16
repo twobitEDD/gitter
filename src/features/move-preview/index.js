@@ -1,6 +1,6 @@
 import GitterMovePreview from './GitterMovePreview';
 
-module.exports = {
+export default {
   __init__: [ 'gitterMovePreview' ],
   gitterMovePreview: [ 'type', GitterMovePreview ]
 };

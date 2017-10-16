@@ -63,4 +63,4 @@ class AddSequenceHandler {
 }
 
 // export default doesn't work
-module.exports = AddSequenceHandler;
+export default AddSequenceHandler;

@@ -28,4 +28,4 @@ class GitterOrderingProvider extends OrderingProvider {
 
 GitterOrderingProvider.$inject = [ 'eventBus' ];
 
-module.exports = GitterOrderingProvider;
+export default GitterOrderingProvider;

@@ -1,6 +1,6 @@
 import EmitterAnimation from './EmitterAnimation';
 
-module.exports = {
+export default {
   __init__: [ 'emitterAnimation' ],
   emitterAnimation: [ 'type', EmitterAnimation ]
 };

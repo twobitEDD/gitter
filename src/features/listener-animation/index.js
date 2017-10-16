@@ -1,6 +1,6 @@
 import ListenerAnimation from './ListenerAnimation';
 
-module.exports = {
+export default {
   __init__: [ 'listenerAnimation' ],
   listenerAnimation: [ 'type', ListenerAnimation ]
 };

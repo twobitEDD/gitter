@@ -1,6 +1,6 @@
 import KitSelect from './KitSelect';
 
-module.exports = {
+export default {
   __init__: [ 'kitSelect' ],
   kitSelect: [ 'type', KitSelect ]
 };

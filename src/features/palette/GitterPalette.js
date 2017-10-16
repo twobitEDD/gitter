@@ -64,4 +64,4 @@ class GitterPalette {
 
 GitterPalette.$inject = [ 'palette', 'create', 'gitterElementFactory', 'lassoTool' ];
 
-module.exports = GitterPalette;
+export default GitterPalette;

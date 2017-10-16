@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   __init__: [ 'keyboardBindings' ],
   keyboardBindings: [ 'type', require('./KeyboardBindings') ]
 };

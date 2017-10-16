@@ -39,17 +39,17 @@ class Sounds {
 
       sounds.forEach(s => {
         numberLoading++;
-  
+
         const sound = p5.prototype.loadSound(s.path, () => {
           numberLoading--;
-  
+
           if (numberLoading === 0) {
             this._loadingOverlay.removeLoadingComponent(this);
-  
+
             this._eventBus.fire('gitter.sounds.loaded');
           }
         });
-  
+
         this._sounds[soundKit][s.id] = {
           sound,
           label: s.label
@@ -85,4 +85,4 @@ class Sounds {
 
 Sounds.$inject = [ 'eventBus', 'gitterConfig', 'loadingOverlay' ];
 
-module.exports = Sounds;
+export default Sounds;

@@ -141,4 +141,4 @@ GitterUpdater.$inject = [
   'gitterConfig'
 ];
 
-module.exports = GitterUpdater;
+export default GitterUpdater;

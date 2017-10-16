@@ -109,4 +109,4 @@ class AutoConnect extends CommandInterceptor {
 
 AutoConnect.$inject = [ 'eventBus', 'elementRegistry', 'modeling', 'gitterRules' ];
 
-module.exports = AutoConnect;
+export default AutoConnect;

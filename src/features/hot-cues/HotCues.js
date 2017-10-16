@@ -33,7 +33,7 @@ class HotCues {
 
         this._slots.forEach((slot, slotId) => {
           let slotEl = this._getSlotEl(slotId);
-          
+
           if (slot !== null) {
             domClasses(slotEl).add('existing');
           }
@@ -199,4 +199,4 @@ HotCues.$inject = [
   'exportConfig'
 ];
 
-module.exports = HotCues;
+export default HotCues;

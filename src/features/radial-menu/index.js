@@ -1,6 +1,6 @@
 import RadialMenu from './RadialMenu';
 
-module.exports = {
+export default {
   __init__: [ 'radialMenu' ],
   radialMenu: [ 'type', RadialMenu ]
 };

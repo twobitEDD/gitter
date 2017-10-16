@@ -111,7 +111,7 @@ class CustomRenderer extends BaseRenderer {
       svgAppend(p, innerCircle);
 
       var text = svgCreate('text');
-      
+
       text.textContent = getLabel(sound) || '';
 
       svgAppend(p, text);
@@ -199,4 +199,4 @@ class CustomRenderer extends BaseRenderer {
 
 CustomRenderer.$inject = [ 'eventBus', 'canvas', 'gitterConfig' ];
 
-module.exports = CustomRenderer;
+export default CustomRenderer;

@@ -46,7 +46,7 @@ class Audio extends CommandInterceptor {
       Object.values(allSounds).forEach(soundKit => {
         Object.values(soundKit).forEach(soundObject => {
           const { sound } = soundObject;
-  
+
           reverb.process(sound, 1, 2); // reverb time, decay rate
           delay.process(sound, .12, .1, 2300); // delay time, feedback, filter frequency
         });
@@ -58,7 +58,7 @@ class Audio extends CommandInterceptor {
       Object.keys(this.phrases).forEach(key => {
         this.mainPart.removePhrase(key);
       });
-      
+
       this.phrases = {};
     });
 
@@ -119,4 +119,4 @@ class Audio extends CommandInterceptor {
 Audio.$inject = [ 'commandStack', 'elementRegistry', 'eventBus', 'sounds' ];
 
 // export default doesn't work
-module.exports = Audio;
+export default Audio;

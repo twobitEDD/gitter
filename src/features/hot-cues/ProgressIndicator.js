@@ -83,4 +83,4 @@ class ProgressIndicator {
 
 ProgressIndicator.$inject = [ 'eventBus', 'canvas' ];
 
-module.exports = ProgressIndicator;
+export default ProgressIndicator;

@@ -1,6 +1,6 @@
 import TempoControl from './TempoControl';
 
-module.exports = {
+export default {
   __init__: [ 'tempoControl' ],
   tempoControl: [ 'type', TempoControl ]
 };

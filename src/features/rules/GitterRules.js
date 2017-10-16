@@ -61,4 +61,4 @@ class GitterRules extends RuleProvider {
 
 GitterRules.$inject = [ 'eventBus', 'gitterConfig' ];
 
-module.exports = GitterRules;
+export default GitterRules;

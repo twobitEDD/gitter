@@ -58,4 +58,4 @@ class GitterElementFactory extends BaseElementFactory {
 
 GitterElementFactory.$inject = [ 'gitterConfig', 'sounds' ];
 
-module.exports = GitterElementFactory;
+export default GitterElementFactory;

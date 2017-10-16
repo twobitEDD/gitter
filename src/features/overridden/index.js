@@ -1,6 +1,6 @@
 import Outline from './Outline';
 
-module.exports = {
+export default {
   __init__: [ 'outline' ],
   outline: [ 'type', Outline ]
 };

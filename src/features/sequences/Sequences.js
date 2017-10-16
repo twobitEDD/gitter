@@ -46,4 +46,4 @@ class Sequences extends CommandInterceptor {
 
 Sequences.$inject = [ 'audio', 'gitterConfig', 'eventBus' ];
 
-module.exports = Sequences;
+export default Sequences;

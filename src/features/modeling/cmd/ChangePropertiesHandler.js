@@ -32,4 +32,4 @@ class ChangePropertiesHandler {
   }
 }
 
-module.exports = ChangePropertiesHandler;
+export default ChangePropertiesHandler;

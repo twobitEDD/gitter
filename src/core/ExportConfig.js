@@ -38,4 +38,4 @@ class ExportConfig {
   }
 }
 
-module.exports = ExportConfig;
+export default ExportConfig;

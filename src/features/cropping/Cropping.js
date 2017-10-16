@@ -26,4 +26,4 @@ class Cropping extends CommandInterceptor {
 Cropping.$inject = [ 'eventBus', 'gitterConnectionCropping' ];
 
 // export default doesn't work
-module.exports = Cropping;
+export default Cropping;
