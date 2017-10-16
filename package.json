@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "description": "Node-based sequencer for the web.",
   "scripts": {
-    "build": "webpack --config ./webpack.config.js"
+    "build": "webpack --progress --colors --config ./webpack.config.js",
+    "auto-build": "webpack --progress --colors --watch --config ./webpack.config.js"
   },
   "keywords": [
     "sequencer"
