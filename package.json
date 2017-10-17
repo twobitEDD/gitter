@@ -16,9 +16,9 @@
     "ids": "^0.2.0",
     "jsmidgen": "^0.1.5",
     "lodash-es": "^4.17.4",
-    "min-dom": "^0.2.0",
+    "min-dom": "^0.3.0",
     "p5": "^0.5.11",
-    "tiny-svg": "^0.1.1"
+    "tiny-svg": "^0.1.2"
   },
   "devDependencies": {
     "babel-core": "^6.24.0",
