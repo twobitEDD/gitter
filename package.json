@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "description": "Node-based sequencer for the web.",
   "scripts": {
-    "build": "webpack --config ./webpack.config.js"
+    "build": "webpack --config ./webpack.config.js",
+    "minify": "uglifyjs -cm -o dist/gitter.min.js dist/gitter.js"
   },
   "keywords": [
     "sequencer"
@@ -21,9 +22,9 @@
     "tiny-svg": "^0.1.2"
   },
   "devDependencies": {
-    "babel-core": "^6.24.0",
+    "babel-core": "^6.26.0",
     "babel-eslint": "^7.2.1",
-    "babel-loader": "^6.4.1",
+    "babel-loader": "^7.1.2",
     "babel-plugin-add-module-exports": "^0.2.1",
     "babel-plugin-transform-class-properties": "^6.23.0",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
@@ -31,8 +32,10 @@
     "copy-webpack-plugin": "^4.0.1",
     "exports-loader": "^0.6.4",
     "imports-loader": "^0.7.1",
+    "lodash-webpack-plugin": "^0.11.4",
     "raw-loader": "^0.5.1",
-    "webpack": "^2.3.2",
-    "webpack-dev-server": "^2.4.2"
+    "uglify-js": "^3.1.4",
+    "webpack": "^3.8.0",
+    "webpack-dev-server": "^2.9.2"
   }
 }

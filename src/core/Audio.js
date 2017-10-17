@@ -1,5 +1,4 @@
-const p5 = require('p5');
-require('p5/lib/addons/p5.sound.js');
+import { p5 } from '../util/p5';
 
 import CommandInterceptor from 'diagram-js/lib/command/CommandInterceptor';
 
@@ -12,8 +11,6 @@ import { isRoot, isEmitter, isListener } from '../util/GitterUtil';
 class Audio extends CommandInterceptor {
   constructor(commandStack, elementRegistry, eventBus, sounds) {
     super(eventBus);
-
-    window.p5 = p5;
 
     this._commandStack = commandStack;
     this._elementRegistry = elementRegistry;
