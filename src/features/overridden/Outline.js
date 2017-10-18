@@ -1,15 +1,14 @@
 'use strict';
 
-var getBBox = require('diagram-js/lib/util/Elements').getBBox;
+import { getBBox } from 'diagram-js/lib/util/Elements';
+
+import svgAppend from 'tiny-svg/lib/append';
+import svgAttr from 'tiny-svg/lib/attr';
+import svgCreate from 'tiny-svg/lib/create';
+
+import domQuery from 'min-dom/lib/query';
 
 var LOW_PRIORITY = 500;
-
-var svgAppend = require('tiny-svg/lib/append'),
-    svgAttr = require('tiny-svg/lib/attr'),
-    svgCreate = require('tiny-svg/lib/create');
-
-var domQuery = require('min-dom/lib/query');
-
 
 /**
  * @class

@@ -3,7 +3,7 @@ import svgAttr from 'tiny-svg/lib/attr';
 import svgCreate from 'tiny-svg/lib/create';
 import svgClear from 'tiny-svg/lib/clear';
 
-var translate = require('diagram-js/lib/util/SvgTransformUtil').translate;
+import { translate } from 'diagram-js/lib/util/SvgTransformUtil';
 
 import { isEmitter, isListener, isRoot } from '../../util/GitterUtil';
 
