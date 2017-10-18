@@ -1,5 +1,27 @@
 import Diagram from 'diagram-js';
 
+// diagram-js modules
+import CroppingConnectionDocking from 'diagram-js/lib/layout/CroppingConnectionDocking';
+import AutoScroll from 'diagram-js/lib/features/auto-scroll';
+import Connect from 'diagram-js/lib/features/connect';
+import ContextPad from 'diagram-js/lib/features/context-pad';
+import Create from 'diagram-js/lib/features/create';
+import EditorActions from 'diagram-js/lib/features/editor-actions';
+import HandTool from 'diagram-js/lib/features/hand-tool';
+import Keyboard from 'diagram-js/lib/features/keyboard';
+import LassoTool from 'diagram-js/lib/features/lasso-tool';
+import Modeling from 'diagram-js/lib/features/modeling';
+import Move from 'diagram-js/lib/features/move';
+import Outline from 'diagram-js/lib/features/outline';
+import Overlays from 'diagram-js/lib/features/overlays';
+import Palette from 'diagram-js/lib/features/palette';
+import PopupMenu from 'diagram-js/lib/features/popup-menu';
+import Rules from 'diagram-js/lib/features/rules';
+import Selection from 'diagram-js/lib/features/selection';
+import ToolManager from 'diagram-js/lib/features/tool-manager';
+import MoveCanvas from 'diagram-js/lib/navigation/movecanvas';
+import ZoomScroll from 'diagram-js/lib/navigation/zoomscroll';
+
 // gitter modules
 import autoConnect from './features/auto-connect';
 import gitterConfig from './config';
@@ -31,27 +53,27 @@ function Gitter(options) {
     {
       gitter: [ 'value', this ],
       gitterConfig: [ 'value', gitterConfig ],
-      connectionDocking: [ 'type', require('diagram-js/lib/layout/CroppingConnectionDocking') ]
+      connectionDocking: [ 'type', CroppingConnectionDocking ]
     },
-    require('diagram-js/lib/features/auto-scroll'),
-    require('diagram-js/lib/features/connect'),
-    require('diagram-js/lib/features/context-pad'),
-    require('diagram-js/lib/features/create'),
-    require('diagram-js/lib/features/editor-actions'),
-    require('diagram-js/lib/features/hand-tool'),
-    require('diagram-js/lib/features/keyboard'),
-    require('diagram-js/lib/features/lasso-tool'),
-    require('diagram-js/lib/features/modeling'),
-    require('diagram-js/lib/features/move'),
-    require('diagram-js/lib/features/outline'),
-    require('diagram-js/lib/features/overlays'),
-    require('diagram-js/lib/features/palette'),
-    require('diagram-js/lib/features/popup-menu'),
-    require('diagram-js/lib/features/rules'),
-    require('diagram-js/lib/features/selection'),
-    require('diagram-js/lib/features/tool-manager'),
-    require('diagram-js/lib/navigation/movecanvas'),
-    require('diagram-js/lib/navigation/zoomscroll'),
+    AutoScroll,
+    Connect,
+    ContextPad,
+    Create,
+    EditorActions,
+    HandTool,
+    Keyboard,
+    LassoTool,
+    Modeling,
+    Move,
+    Outline,
+    Overlays,
+    Palette,
+    PopupMenu,
+    Rules,
+    Selection,
+    ToolManager,
+    MoveCanvas,
+    ZoomScroll,
     {
       movePreview: [ 'value', {} ]
     }
