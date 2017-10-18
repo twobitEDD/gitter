@@ -23,6 +23,16 @@ module.exports = {
   resolve: {
     extensions: ['.js'],
   },
+  node: {
+    global: true,
+    process: false,
+    __filename: false,
+    __dirname: false,
+    Buffer: false,
+    setImmediate: true,
+    fs: false,
+    path: false
+  },
   output: {
     path: path.resolve(__dirname, 'dist'),
     publicPath: '/',
