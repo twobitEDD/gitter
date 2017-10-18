@@ -1,3 +1,10 @@
+import GitterRenderer from './GitterRenderer';
+import Audio from './Audio';
+import GitterElementFactory from './GitterElementFactory';
+import Sounds from './Sounds';
+import LoadingOverlay from './LoadingOverlay';
+import ExportConfig from './ExportConfig';
+
 export default {
   __init__: [
     'gitterRenderer',
@@ -7,10 +14,10 @@ export default {
     'loadingOverlay',
     'exportConfig'
   ],
-  gitterRenderer: [ 'type', require('./GitterRenderer') ],
-  audio: [ 'type', require('./Audio') ],
-  gitterElementFactory: [ 'type', require('./GitterElementFactory') ],
-  sounds: [ 'type', require('./Sounds') ],
-  loadingOverlay: [ 'type', require('./LoadingOverlay') ],
-  exportConfig: [ 'type', require('./ExportConfig') ]
+  gitterRenderer: [ 'type', GitterRenderer ],
+  audio: [ 'type', Audio ],
+  gitterElementFactory: [ 'type', GitterElementFactory ],
+  sounds: [ 'type', Sounds ],
+  loadingOverlay: [ 'type', LoadingOverlay ],
+  exportConfig: [ 'type', ExportConfig ]
 };

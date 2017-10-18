@@ -1,4 +1,6 @@
+import AutoConnect from './AutoConnect';
+
 export default {
   __init__: [ 'autoConnect' ],
-  autoConnect: [ 'type', require('./AutoConnect') ]
+  autoConnect: [ 'type', AutoConnect ]
 };
