@@ -1,10 +1,8 @@
-import path from 'path';
-
 import resolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs';
-// import uglify from 'rollup-plugin-uglify';
 import babel from 'rollup-plugin-babel';
 import string from 'rollup-plugin-string';
+import legacy from 'rollup-plugin-legacy';
 
 // `npm run build` -> `production` is true
 // `npm run dev` -> `production` is false
@@ -20,6 +18,7 @@ export default {
     format: 'umd'
   },
   name: 'Gitter',
+  context: 'window',
   plugins: [
     string({
       include: '**/*.svg'
@@ -37,14 +36,16 @@ export default {
       ]
     }),
     resolve(),
+    legacy({
+      'node_modules/p5/lib/p5.js': 'p5',
+      'node_modules/p5/lib/addons/p5.sound.js': 'p5_sound'
+    }),
     commonjs({
       include: [
         '**',
-        'node_modules/**',
-        '/absolute/path/to/diagram-js/**'
+        'node_modules/**'
       ]
-    }),
-    // uglify(), // minify, but only in production
+    })
   ],
   sourcemap: true
 };
