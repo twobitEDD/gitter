@@ -11,7 +11,7 @@
   "author": "Philipp Fromme",
   "license": "MIT",
   "dependencies": {
-    "diagram-js": "https://github.com/bpmn-io/diagram-js.git",
+    "diagram-js": "github:bpmn-io/diagram-js#ES2015",
     "file-saver": "^1.3.3",
     "ids": "^0.2.0",
     "jsmidgen": "^0.1.5",
