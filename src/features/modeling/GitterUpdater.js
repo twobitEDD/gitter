@@ -1,3 +1,5 @@
+import { p5 } from '../../util/p5';
+
 import CommandInterceptor from 'diagram-js/lib/command/CommandInterceptor';
 
 import { isRoot, isEmitter, isListener } from '../../util/GitterUtil';
